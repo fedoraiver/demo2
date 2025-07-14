@@ -10,5 +10,19 @@ fn main() {
             })
             .set(ImagePlugin::default_nearest()),
     );
+    app.add_systems(Startup, setup_camera);
     app.run();
+}
+
+fn setup_camera(mut commands: Commands) {
+    commands.spawn((
+        Camera2d,
+        Projection::Orthographic(OrthographicProjection {
+            scaling_mode: bevy::render::camera::ScalingMode::AutoMin {
+                min_width: (1024.0),
+                min_height: (1024.0),
+            },
+            ..OrthographicProjection::default_2d()
+        }),
+    ));
 }
