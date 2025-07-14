@@ -5,3 +5,9 @@ edition = "2024"
 
 [dependencies]
 bevy = {version = "*",features=["file_watcher"]}
+
+[profile.dev]
+opt-level = 0
+
+[profile.dev.package."*"]
+opt-level = 3
