@@ -30,8 +30,9 @@ fn main() {
     // app.add_plugins(MainMenuPlugin);
     app.add_plugins(AsepriteUltraPlugin);
     app.add_systems(Startup, setup_camera);
-    app.add_systems(Startup, setup_card);
-    app.add_systems(Startup, setup_board);
+    app.add_systems(Startup, setup_background);
+    // app.add_systems(Startup, setup_card);
+    // app.add_systems(Startup, setup_board);
     app.add_systems(Update, exit_game);
     app.run();
 }
