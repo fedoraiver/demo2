@@ -27,7 +27,7 @@ pub fn setup_camera(mut cmd: Commands) {
 pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
     let cards_handle: Handle<Aseprite> = asset_server.load("cards.aseprite");
     let board_handle: Handle<Aseprite> = asset_server.load("board.aseprite");
-    // let icon_pack_handle: Handle<Aseprite> = asset_server.load("icon_pack.aseprite");
+    let icon_pack_handle: Handle<Aseprite> = asset_server.load("icon_pack.aseprite");
     cmd.spawn((
         AseSlice {
             name: "board".into(),
@@ -51,14 +51,21 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                     custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
                     ..Default::default()
                 },
-                Transform::from_xyz(
-                    j as f32 * 70.0 - 13.0 * 35.0,
-                    i as f32 * 100.0 - 2.0 * 50.0,
-                    0.0,
-                ),
+                Transform::from_xyz(j as f32 * 70.0 - 420.0, i as f32 * 100.0 - 2.0 * 50.0, 0.0),
             ));
         }
     }
+    cmd.spawn((
+        AseSlice {
+            name: "gamble_text".into(),
+            aseprite: icon_pack_handle.clone(),
+        },
+        Sprite {
+            custom_size: Some(Vec2::new(640.0, 256.0)),
+            ..Default::default()
+        },
+        Transform::from_xyz(0.0, 0.0, 1.0),
+    ));
 }
 
 pub fn exit_game(keyboard_input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
