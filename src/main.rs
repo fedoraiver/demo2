@@ -7,6 +7,10 @@ const VALUES: [&str; 13] = [
     "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen",
     "king",
 ];
+const CARD_WIDTH: f32 = 64.0;
+const CARD_HEIGHT: f32 = 96.0;
+const CANVAS_WIDTH: f32 = 1024.0;
+const CANVAS_HEIGHT: f32 = 576.0;
 
 fn main() {
     let mut app = App::new();
@@ -30,8 +34,8 @@ fn setup_camera(mut commands: Commands) {
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: bevy::render::camera::ScalingMode::AutoMin {
-                min_width: (1024.0),
-                min_height: (1024.0),
+                min_width: (CANVAS_WIDTH),
+                min_height: (CANVAS_HEIGHT),
             },
             ..OrthographicProjection::default_2d()
         }),
@@ -49,6 +53,7 @@ fn setup_card(mut commands: Commands, asset_server: Res<AssetServer>) {
                     aseprite: cards_handle.clone(),
                 },
                 Sprite {
+                    custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
                     ..Default::default()
                 },
                 Transform::from_xyz(
