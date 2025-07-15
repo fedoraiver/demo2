@@ -164,7 +164,7 @@ pub fn card_hover_system(
 
             // 添加浮动偏移（例如上下+左右循环）
             let t = time.elapsed_secs_f64();
-            let amplitude = 1.0;
+            let amplitude = 2.0;
             let speed = 2.0;
 
             // 循环偏移（上下+左右）
