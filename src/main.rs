@@ -26,6 +26,7 @@ fn main() {
     app.add_plugins(AsepriteUltraPlugin);
     app.add_systems(Startup, setup_camera);
     app.add_systems(Startup, setup_card);
+    app.add_systems(Update, exit_game);
     app.run();
 }
 
@@ -63,5 +64,11 @@ fn setup_card(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ),
             ));
         }
+    }
+}
+
+fn exit_game(keyboard_input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
+    if keyboard_input.just_pressed(KeyCode::Escape) {
+        exit.write(AppExit::Success);
     }
 }
