@@ -1,6 +1,13 @@
 use bevy::prelude::*;
 use bevy_aseprite_ultra::prelude::*;
 
+// 花色和点数定义
+const SUITS: [&str; 4] = ["spades", "hearts", "clubs", "diamonds"];
+const VALUES: [&str; 13] = [
+    "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen",
+    "king",
+];
+
 fn main() {
     let mut app = App::new();
     app.add_plugins(
@@ -32,13 +39,24 @@ fn setup_camera(mut commands: Commands) {
 }
 
 fn setup_card(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn((
-        AseSlice {
-            name: "diamonds_ace".into(),
-            aseprite: asset_server.load("cards.aseprite"),
-        },
-        Sprite {
-            ..Default::default()
-        },
-    ));
+    let cards_handle: Handle<Aseprite> = asset_server.load("cards.aseprite");
+    for i in 0..SUITS.len() {
+        for j in 0..VALUES.len() {
+            let slice_name = format!("{}_{}", SUITS[i], VALUES[j]);
+            commands.spawn((
+                AseSlice {
+                    name: slice_name,
+                    aseprite: cards_handle.clone(),
+                },
+                Sprite {
+                    ..Default::default()
+                },
+                Transform::from_xyz(
+                    j as f32 * 70.0 - 13.0 * 35.0,
+                    i as f32 * 100.0 - 2.0 * 50.0,
+                    0.0,
+                ),
+            ));
+        }
+    }
 }
