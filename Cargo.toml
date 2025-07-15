@@ -8,6 +8,7 @@ bevy = {version = "*",features=["file_watcher"]}
 bevy_aseprite_ultra = "*"
 rmp-serde = { version = "*", optional = true }
 image = { version = "*", optional = true }
+bevy_hanabi = {version = "*"}
 
 [profile.dev]
 opt-level = 0
