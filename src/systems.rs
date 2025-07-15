@@ -60,7 +60,6 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                 },
                 Transform::from_xyz(pos_x, pos_y, 0.0),
                 CardMarker,
-                Position { x: pos_x, y: pos_y },
                 Shape::Rect {
                     width: CARD_WIDTH,
                     height: CARD_HEIGHT,
@@ -83,14 +82,14 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
 }
 
 pub fn cursor_hover_system(
-    mut query: Query<(&Position, &Shape, &mut Hoverable)>,
+    mut query: Query<(&Transform, &Shape, &mut Hoverable)>,
     cursor_position: Res<CursorWorldPosition>,
 ) {
-    for (position, shape, mut hoverable) in query.iter_mut() {
+    for (transform, shape, mut hoverable) in query.iter_mut() {
         let cursor_pos = cursor_position.position;
         if shape.contains_point(
-            *position,
-            Position {
+            transform.translation.truncate(),
+            Vec2 {
                 x: cursor_pos.x,
                 y: cursor_pos.y,
             },
@@ -141,16 +140,16 @@ pub fn get_cursor_world_position_system(
     }
 }
 
-pub fn card_hover_system(mut query: Query<(&Hoverable, &Position), With<CardMarker>>) {
-    for (hoverable, position) in query.iter() {
+pub fn card_hover_system(mut query: Query<(&Hoverable, &Transform), With<CardMarker>>) {
+    for (hoverable, transform) in query.iter() {
         if hoverable.is_hovering {
             // For Debug
             // info!(
             //     "Hovering over card at position: ({}, {})",
-            //     position.x, position.y
+            //     transform.translation.x, transform.translation.y
             // );
 
-            // To-Do: Hover logic
+            // To-Do: Hover logic:上下左右循环移动
         }
     }
 }

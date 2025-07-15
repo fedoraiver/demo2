@@ -12,19 +12,13 @@ pub struct Hoverable {
 pub struct MainCamera;
 
 #[derive(Component, Debug, Clone, Copy)]
-pub struct Position {
-    pub x: f32,
-    pub y: f32,
-}
-
-#[derive(Component, Debug, Clone, Copy)]
 pub enum Shape {
     // Circle { radius: f32 },
     Rect { width: f32, height: f32 },
 }
 
 impl Shape {
-    pub fn contains_point(&self, center_point: Position, test_point: Position) -> bool {
+    pub fn contains_point(&self, center_point: Vec2, test_point: Vec2) -> bool {
         match self {
             // Shape::Circle { radius } => {
             //     let dx = point_x - self.x;
