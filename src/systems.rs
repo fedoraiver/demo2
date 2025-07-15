@@ -65,6 +65,9 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                     height: CARD_HEIGHT,
                 },
                 Hoverable { is_hovering: false },
+                BasePosition {
+                    position: Vec3::new(pos_x, pos_y, 0.0),
+                },
             ));
         }
     }
@@ -140,8 +143,14 @@ pub fn get_cursor_world_position_system(
     }
 }
 
-pub fn card_hover_system(mut query: Query<(&Hoverable, &Transform), With<CardMarker>>) {
-    for (hoverable, transform) in query.iter() {
+pub fn card_hover_system(
+    time: Res<Time>,
+    mut query: Query<
+        (&Hoverable, &mut Transform, &BasePosition),
+        (With<CardMarker>, Changed<Hoverable>),
+    >,
+) {
+    for (hoverable, mut transform, base_posotion) in query.iter_mut() {
         if hoverable.is_hovering {
             // For Debug
             // info!(
@@ -149,7 +158,25 @@ pub fn card_hover_system(mut query: Query<(&Hoverable, &Transform), With<CardMar
             //     transform.translation.x, transform.translation.y
             // );
 
-            // To-Do: Hover logic:上下左右循环移动
+            // 在z轴提升一点避免被遮挡
+            transform.translation.z = 2.0;
+
+            // 添加浮动偏移（例如上下+左右循环）
+            let t = time.elapsed_secs_f64();
+            let amplitude = 1.0;
+            let speed = 2.0;
+
+            // 循环偏移（上下+左右）
+            let offset_x = (t * speed).sin() as f32 * amplitude;
+            let offset_y = (t * speed).cos() as f32 * amplitude * 0.4;
+
+            transform.translation.x = base_posotion.position.x + offset_x;
+            transform.translation.y = base_posotion.position.y + offset_y;
+        } else {
+            // 恢复到原始位置
+            transform.translation.x = base_posotion.position.x;
+            transform.translation.y = base_posotion.position.y;
+            transform.translation.z = base_posotion.position.z;
         }
     }
 }

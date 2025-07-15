@@ -8,6 +8,11 @@ pub struct Hoverable {
     pub is_hovering: bool,
 }
 
+#[derive(Component, Debug, Clone, Copy)]
+pub struct BasePosition {
+    pub position: Vec3,
+}
+
 #[derive(Component)]
 pub struct MainCamera;
 

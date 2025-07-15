@@ -32,7 +32,7 @@ fn main() {
     // app.init_state::<AppState>();
     // app.add_plugins(MainMenuPlugin);
     app.add_plugins(AsepriteUltraPlugin);
-    app.insert_resource(Time::<Fixed>::from_hz(1.0));
+    app.insert_resource(Time::<Fixed>::from_hz(60.0));
     app.init_resource::<CursorWorldPosition>();
     app.add_systems(Startup, setup_camera);
     app.add_systems(Startup, setup_background);
