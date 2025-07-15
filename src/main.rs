@@ -1,3 +1,6 @@
+// mod main_menu;
+
+// use crate::main_menu::MainMenuPlugin;
 use bevy::prelude::*;
 use bevy_aseprite_ultra::prelude::*;
 
@@ -12,8 +15,17 @@ const CARD_HEIGHT: f32 = 96.0;
 const CANVAS_WIDTH: f32 = 1024.0;
 const CANVAS_HEIGHT: f32 = 576.0;
 
+// #[derive(States, Clone, Eq, PartialEq, Debug, Hash, Default)]
+// enum AppState {
+//     #[default]
+//     MainMenu,
+//     InGame,
+//     Paused,
+// }
+
 fn main() {
     let mut app = App::new();
+
     app.add_plugins(
         DefaultPlugins
             .set(AssetPlugin {
@@ -23,9 +35,12 @@ fn main() {
             })
             .set(ImagePlugin::default_nearest()),
     );
+    // app.init_state::<AppState>();
+    // app.add_plugins(MainMenuPlugin);
     app.add_plugins(AsepriteUltraPlugin);
     app.add_systems(Startup, setup_camera);
     app.add_systems(Startup, setup_card);
+    app.add_systems(Startup, setup_board);
     app.add_systems(Update, exit_game);
     app.run();
 }
@@ -65,6 +80,20 @@ fn setup_card(mut commands: Commands, asset_server: Res<AssetServer>) {
             ));
         }
     }
+}
+
+fn setup_board(mut cmd: Commands, asset_server: Res<AssetServer>) {
+    cmd.spawn((
+        AseSlice {
+            name: "board".into(),
+            aseprite: asset_server.load("board.aseprite"),
+        },
+        Sprite {
+            custom_size: Some(Vec2::new(CANVAS_WIDTH, CANVAS_HEIGHT)),
+            ..Default::default()
+        },
+        Transform::from_xyz(0.0, 0.0, -1.0),
+    ));
 }
 
 fn exit_game(keyboard_input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
