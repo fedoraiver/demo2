@@ -3,9 +3,21 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct CardMarker;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Hoverable {
     pub is_hovering: bool,
+}
+
+#[derive(Component, Default)]
+pub struct Selectable {
+    pub is_selected: bool,
+}
+
+#[derive(Component, Default)]
+pub struct Movable {
+    pub movable_by_cursor: bool,
+    pub is_moving: bool,
+    pub delta: Vec2,
 }
 
 #[derive(Component, Debug, Clone, Copy)]
@@ -23,7 +35,7 @@ pub enum Shape {
 }
 
 impl Shape {
-    pub fn contains_point(&self, center_point: Vec2, test_point: Vec2) -> bool {
+    pub fn contains_point(&self, &center_point: &Vec2, &test_point: &Vec2) -> bool {
         match self {
             // Shape::Circle { radius } => {
             //     let dx = point_x - self.x;

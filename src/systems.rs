@@ -65,7 +65,12 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                     width: CARD_WIDTH,
                     height: CARD_HEIGHT,
                 },
-                Hoverable { is_hovering: false },
+                Hoverable::default(),
+                Selectable::default(),
+                Movable {
+                    movable_by_cursor: true,
+                    ..Default::default()
+                },
                 BasePosition {
                     position: Vec3::new(pos_x, pos_y, 0.0),
                 },
@@ -85,19 +90,12 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
-pub fn cursor_hover_system(
+pub fn cursor_hover(
     mut query: Query<(&Transform, &Shape, &mut Hoverable)>,
     cursor_position: Res<CursorWorldPosition>,
 ) {
     for (transform, shape, mut hoverable) in query.iter_mut() {
-        let cursor_pos = cursor_position.position;
-        if shape.contains_point(
-            transform.translation.truncate(),
-            Vec2 {
-                x: cursor_pos.x,
-                y: cursor_pos.y,
-            },
-        ) {
+        if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
             hoverable.is_hovering = true;
         } else {
             hoverable.is_hovering = false;
@@ -105,15 +103,87 @@ pub fn cursor_hover_system(
     }
 }
 
-pub fn get_cursor_world_position_system(
+pub fn cursor_select(
+    mut query: Query<(
+        &mut Transform,
+        &Shape,
+        &mut Selectable,
+        Option<&mut Movable>,
+        Option<&mut BasePosition>,
+    )>,
+    cursor_position: Res<CursorWorldPosition>,
+    mut click_position: ResMut<ClickWorldPosition>,
+    mouse_button_input: Res<ButtonInput<MouseButton>>,
+) {
+    if mouse_button_input.just_pressed(MouseButton::Left) {
+        click_position.position = cursor_position.position.clone();
+        // For Debug
+        // info!("mouse left press");
+
+        for (transform, shape, mut selectable, maybe_movable, _maybe_base_position) in
+            query.iter_mut()
+        {
+            if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
+                selectable.is_selected = true;
+                if let Some(mut movable) = maybe_movable {
+                    if movable.movable_by_cursor {
+                        movable.is_moving = true;
+                    }
+                }
+                // For Debug
+                // info!(
+                //     "Card at position ({}, {}) is now {}",
+                //     transform.translation.x,
+                //     transform.translation.y,
+                //     if selectable.is_selected {
+                //         "selected"
+                //     } else {
+                //         "deselected"
+                //     }
+                // );
+            }
+        }
+    }
+    if mouse_button_input.just_released(MouseButton::Left) {
+        click_position.position = Vec2::ZERO;
+        // For Debug
+        // info!("mouse left release");
+
+        for (transform, shape, mut selectable, maybe_movable, maybe_base_position) in
+            query.iter_mut()
+        {
+            if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
+                selectable.is_selected = false;
+                if let Some(mut movable) = maybe_movable {
+                    if movable.movable_by_cursor {
+                        movable.is_moving = false;
+                    }
+                    if let Some(mut base_position) = maybe_base_position {
+                        base_position.position.x = transform.translation.x;
+                        base_position.position.y = transform.translation.y;
+                    }
+                }
+                // For Debug
+                // info!(
+                //     "Card at position ({}, {}) is now {}",
+                //     transform.translation.x,
+                //     transform.translation.y,
+                //     if selectable.is_selected {
+                //         "selected"
+                //     } else {
+                //         "deselected"
+                //     }
+                // );
+            }
+        }
+    }
+}
+
+pub fn get_cursor_world_position(
     mut cursor_world_position: ResMut<CursorWorldPosition>,
-    // query to get the window (so we can read the current cursor position)
     q_window: Query<&Window, With<PrimaryWindow>>,
-    // query to get camera transform
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
 ) {
-    // get the camera info and transform
-    // assuming there is exactly one main camera entity, so Query::single() is OK
     let (camera, camera_transform) = match q_camera.single() {
         Ok((camera, transform)) => (camera, transform),
         Err(_) => {
@@ -122,7 +192,6 @@ pub fn get_cursor_world_position_system(
         }
     };
 
-    // There is only one primary window, so we can similarly get it from the query:
     let window = match q_window.single() {
         Ok(window) => window,
         Err(_) => {
@@ -131,8 +200,6 @@ pub fn get_cursor_world_position_system(
         }
     };
 
-    // check if the cursor is inside the window and get its position
-    // then, ask bevy to convert into world coordinates, and truncate to discard Z
     if let Some(world_position) = window
         .cursor_position()
         .and_then(|cursor| camera.viewport_to_world(camera_transform, cursor).ok())
@@ -144,14 +211,19 @@ pub fn get_cursor_world_position_system(
     }
 }
 
-pub fn card_hover_system(
+pub fn card_hover(
     time: Res<Time>,
     mut query: Query<
-        (&Hoverable, &mut Transform, &BasePosition),
+        (
+            &Hoverable,
+            &mut Transform,
+            &BasePosition,
+            Option<&Selectable>,
+        ),
         (With<CardMarker>, Changed<Hoverable>),
     >,
 ) {
-    for (hoverable, mut transform, base_posotion) in query.iter_mut() {
+    for (hoverable, mut transform, base_posotion, maybe_selectable) in query.iter_mut() {
         if hoverable.is_hovering {
             // For Debug
             // info!(
@@ -159,25 +231,52 @@ pub fn card_hover_system(
             //     transform.translation.x, transform.translation.y
             // );
 
-            // 在z轴提升一点避免被遮挡
+            if let Some(selectable) = maybe_selectable {
+                if selectable.is_selected {
+                    return;
+                }
+            }
             transform.translation.z = 2.0;
 
-            // 添加浮动偏移（例如上下+左右循环）
             let t = time.elapsed_secs_f64();
             let amplitude = 2.0;
             let speed = 2.0;
 
-            // 循环偏移（上下+左右）
             let offset_x = (t * speed).sin() as f32 * amplitude;
             let offset_y = (t * speed).cos() as f32 * amplitude * 0.4;
 
             transform.translation.x = base_posotion.position.x + offset_x;
             transform.translation.y = base_posotion.position.y + offset_y;
         } else {
-            // 恢复到原始位置
             transform.translation.x = base_posotion.position.x;
             transform.translation.y = base_posotion.position.y;
             transform.translation.z = base_posotion.position.z;
+        }
+    }
+}
+
+pub fn card_move_by_cursor(
+    mut query: Query<&mut Movable, With<CardMarker>>,
+    cursor_position: Res<CursorWorldPosition>,
+    click_position: ResMut<ClickWorldPosition>,
+) {
+    for mut movable in query.iter_mut() {
+        if movable.movable_by_cursor && movable.is_moving {
+            movable.delta.x = cursor_position.position.x - click_position.position.x;
+            movable.delta.y = cursor_position.position.y - click_position.position.y;
+            // For Debug
+            // info!("Card is moving by cursor to position: ({}, {})", movable.delta.x, movable.delta.y);
+        } else {
+            movable.delta = Vec2::ZERO;
+        }
+    }
+}
+
+pub fn item_move(mut query: Query<(&Movable, &mut Transform, &BasePosition)>) {
+    for (movable, mut transform, base_position) in query.iter_mut() {
+        if movable.is_moving {
+            transform.translation.x = base_position.position.x + movable.delta.x;
+            transform.translation.y = base_position.position.y + movable.delta.y;
         }
     }
 }

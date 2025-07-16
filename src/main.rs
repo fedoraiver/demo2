@@ -37,12 +37,15 @@ fn main() {
     app.add_plugins(HanabiPlugin);
     app.insert_resource(Time::<Fixed>::from_hz(60.0));
     app.init_resource::<CursorWorldPosition>();
+    app.init_resource::<ClickWorldPosition>();
     app.add_systems(Startup, setup_particle);
     app.add_systems(Startup, setup_camera);
     app.add_systems(Startup, setup_background);
-    app.add_systems(FixedUpdate, get_cursor_world_position_system);
-    app.add_systems(FixedUpdate, cursor_hover_system);
-    app.add_systems(FixedUpdate, card_hover_system);
+    app.add_systems(Update, get_cursor_world_position);
+    app.add_systems(Update, cursor_hover);
+    app.add_systems(Update, card_hover);
+    app.add_systems(Update, card_move_by_cursor);
+    app.add_systems(Update, (item_move, cursor_select).chain());
     app.add_systems(Update, exit_game);
     app.run();
 }
