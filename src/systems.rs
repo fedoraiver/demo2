@@ -67,10 +67,8 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                 },
                 Hoverable,
                 Selectable,
-                Movable {
-                    movable_by_cursor: true,
-                    ..Default::default()
-                },
+                Movable,
+                MovableByCursor,
                 BasePosition {
                     position: Vec3::new(pos_x, pos_y, 0.0),
                 },
@@ -110,7 +108,7 @@ pub fn cursor_select(
             Entity,
             &mut Transform,
             &Shape,
-            Option<&mut Movable>,
+            Option<&MovableByCursor>,
             Option<&mut BasePosition>,
         ),
         With<Selectable>,
@@ -125,13 +123,13 @@ pub fn cursor_select(
         // For Debug
         // info!("mouse left press");
 
-        for (entity, transform, shape, maybe_movable, _maybe_base_position) in query.iter_mut() {
+        for (entity, transform, shape, maybe_movable_by_cursor, _maybe_base_position) in
+            query.iter_mut()
+        {
             if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
                 cmd.entity(entity).insert(Selected);
-                if let Some(mut movable) = maybe_movable {
-                    if movable.movable_by_cursor {
-                        movable.is_moving = true;
-                    }
+                if let Some(mut _movable_by_cursor) = maybe_movable_by_cursor {
+                    cmd.entity(entity).insert(IsMoving::default());
                 }
                 // For Debug
                 // info!(
@@ -152,13 +150,13 @@ pub fn cursor_select(
         // For Debug
         // info!("mouse left release");
 
-        for (entity, transform, shape, maybe_movable, maybe_base_position) in query.iter_mut() {
+        for (entity, transform, shape, maybe_movable_by_cursor, maybe_base_position) in
+            query.iter_mut()
+        {
             if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
                 cmd.entity(entity).remove::<Selected>();
-                if let Some(mut movable) = maybe_movable {
-                    if movable.movable_by_cursor {
-                        movable.is_moving = false;
-                    }
+                if let Some(mut _movable) = maybe_movable_by_cursor {
+                    cmd.entity(entity).remove::<IsMoving>();
                     if let Some(mut base_position) = maybe_base_position {
                         base_position.position.x = transform.translation.x;
                         base_position.position.y = transform.translation.y;
@@ -255,28 +253,20 @@ pub fn card_hover(
 }
 
 pub fn card_move_by_cursor(
-    mut query: Query<&mut Movable, With<CardMarker>>,
+    mut query: Query<&mut IsMoving, With<CardMarker>>,
     cursor_position: Res<CursorWorldPosition>,
     click_position: ResMut<ClickWorldPosition>,
 ) {
-    for mut movable in query.iter_mut() {
-        if movable.movable_by_cursor && movable.is_moving {
-            movable.delta.x = cursor_position.position.x - click_position.position.x;
-            movable.delta.y = cursor_position.position.y - click_position.position.y;
-            // For Debug
-            // info!("Card is moving by cursor to position: ({}, {})", movable.delta.x, movable.delta.y);
-        } else {
-            movable.delta = Vec2::ZERO;
-        }
+    for mut is_moving in query.iter_mut() {
+        is_moving.delta.x = cursor_position.position.x - click_position.position.x;
+        is_moving.delta.y = cursor_position.position.y - click_position.position.y;
     }
 }
 
-pub fn item_move(mut query: Query<(&Movable, &mut Transform, &BasePosition)>) {
-    for (movable, mut transform, base_position) in query.iter_mut() {
-        if movable.is_moving {
-            transform.translation.x = base_position.position.x + movable.delta.x;
-            transform.translation.y = base_position.position.y + movable.delta.y;
-        }
+pub fn item_move(mut query: Query<(&IsMoving, &mut Transform, &BasePosition)>) {
+    for (is_moving, mut transform, base_position) in query.iter_mut() {
+        transform.translation.x = base_position.position.x + is_moving.delta.x;
+        transform.translation.y = base_position.position.y + is_moving.delta.y;
     }
 }
 

@@ -15,10 +15,14 @@ pub struct Selectable;
 #[derive(Component)]
 pub struct Selected;
 
+#[derive(Component)]
+pub struct Movable;
+
+#[derive(Component)]
+pub struct MovableByCursor;
+
 #[derive(Component, Default)]
-pub struct Movable {
-    pub movable_by_cursor: bool,
-    pub is_moving: bool,
+pub struct IsMoving {
     pub delta: Vec2,
 }
 
