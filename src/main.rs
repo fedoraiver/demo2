@@ -44,11 +44,12 @@ fn main() {
     app.add_systems(
         Update,
         (
-            (get_cursor_world_position, card_move_by_cursor, exit_game),
+            (get_cursor_world_position, card_move_by_cursor),
             (cursor_hover, card_hover).chain(),
             (item_move, cursor_select).chain(),
         )
             .run_if(in_state(AppState::InGame)),
     );
+    app.add_systems(Update, toggle_pause_state);
     app.run();
 }

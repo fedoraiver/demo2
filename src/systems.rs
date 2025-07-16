@@ -5,6 +5,7 @@ use bevy_hanabi::prelude::*;
 
 use crate::components::*;
 use crate::resources::*;
+use crate::states::AppState;
 
 const SUITS: [&str; 4] = ["spades", "hearts", "clubs", "diamonds"];
 const VALUES: [&str; 13] = [
@@ -250,9 +251,17 @@ pub fn item_move(mut query: Query<(&IsMoving, &mut Transform, &BasePosition)>) {
     }
 }
 
-pub fn exit_game(keyboard_input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
+pub fn toggle_pause_state(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    app_state_current_state: Res<State<AppState>>,
+    mut app_state_next_state: ResMut<NextState<AppState>>,
+) {
     if keyboard_input.just_pressed(KeyCode::Escape) {
-        exit.write(AppExit::Success);
+        match app_state_current_state.get() {
+            AppState::InGame => app_state_next_state.set(AppState::Paused),
+            AppState::Paused => app_state_next_state.set(AppState::InGame),
+            _ => {}
+        }
     }
 }
 

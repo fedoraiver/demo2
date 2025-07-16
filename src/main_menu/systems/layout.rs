@@ -34,7 +34,7 @@ pub fn build_main_menu(cmd: &mut Commands) {
             MainMenu,
         ),
         children![
-            //Tile
+            //Title
             (
                 Node {
                     width: Val::Px(300.0),
