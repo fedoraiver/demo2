@@ -1,0 +1,55 @@
+use crate::main_menu::styles::*;
+
+use bevy::prelude::*;
+
+use crate::main_menu::components::{PlayButton, QuitButton};
+
+pub fn interact_with_play_button(
+    mut query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<PlayButton>),
+    >,
+) {
+    let (interaction, mut background_color) = match query.single_mut() {
+        Ok((interaction, background_color)) => (interaction, background_color),
+        Err(_) => {
+            return;
+        }
+    };
+    match *interaction {
+        Interaction::Pressed => {
+            *background_color = PRESSED_BUTTON_COLOR.into();
+        }
+        Interaction::Hovered => {
+            *background_color = HOVERED_BUTTON_COLOR.into();
+        }
+        Interaction::None => {
+            *background_color = NORMAL_BUTTON_COLOR.into();
+        }
+    };
+}
+
+pub fn interact_with_quit_button(
+    mut query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<QuitButton>),
+    >,
+) {
+    let (interaction, mut background_color) = match query.single_mut() {
+        Ok((interaction, background_color)) => (interaction, background_color),
+        Err(_) => {
+            return;
+        }
+    };
+    match *interaction {
+        Interaction::Pressed => {
+            *background_color = PRESSED_BUTTON_COLOR.into();
+        }
+        Interaction::Hovered => {
+            *background_color = HOVERED_BUTTON_COLOR.into();
+        }
+        Interaction::None => {
+            *background_color = NORMAL_BUTTON_COLOR.into();
+        }
+    };
+}
