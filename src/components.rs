@@ -3,25 +3,29 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct CardMarker;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Hoverable;
 
 #[derive(Component)]
+#[require(Hoverable)]
 pub struct Hovering;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Selectable;
 
 #[derive(Component)]
+#[require(Selectable)]
 pub struct Selected;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Movable;
 
 #[derive(Component)]
+#[require(Movable)]
 pub struct MovableByCursor;
 
 #[derive(Component, Default)]
+#[require(Movable)]
 pub struct IsMoving {
     pub delta: Vec2,
 }

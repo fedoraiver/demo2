@@ -67,7 +67,6 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                 },
                 Hoverable,
                 Selectable,
-                Movable,
                 MovableByCursor,
                 BasePosition {
                     position: Vec3::new(pos_x, pos_y, 0.0),
