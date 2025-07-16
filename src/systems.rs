@@ -276,7 +276,7 @@ pub fn exit_game(keyboard_input: Res<ButtonInput<KeyCode>>, mut exit: EventWrite
     }
 }
 
-pub fn setup_particle(mut cmd: Commands, mut effects: ResMut<Assets<EffectAsset>>) {
+pub fn register_particle_effect(mut cmd: Commands, mut effects: ResMut<Assets<EffectAsset>>) {
     let mut gradient = Gradient::new();
     gradient.add_key(0.0, Vec4::new(1.0, 0.0, 0.0, 1.0));
     gradient.add_key(1.0, Vec4::new(0.0, 0.0, 1.0, 1.0));
@@ -333,8 +333,8 @@ pub fn setup_particle(mut cmd: Commands, mut effects: ResMut<Assets<EffectAsset>
     // Insert into the asset system
     let effect_handle = effects.add(effect);
 
-    cmd.spawn((
-        ParticleEffect::new(effect_handle),
-        Transform::from_xyz(0.0, 0.0, 3.0),
-    ));
+    // cmd.spawn((
+    //     ParticleEffect::new(effect_handle),
+    //     Transform::from_xyz(0.0, 0.0, 3.0),
+    // ));
 }

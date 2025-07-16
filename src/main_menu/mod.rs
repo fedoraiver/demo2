@@ -2,7 +2,7 @@ mod components;
 mod styles;
 mod systems;
 
-use crate::AppState;
+use super::states::AppState;
 use bevy::prelude::*;
 use systems::layout::*;
 pub struct MainMenuPlugin;
