@@ -120,8 +120,7 @@ pub fn cursor_select(
 ) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
         click_position.position = cursor_position.position.clone();
-        // For Debug
-        // info!("mouse left press");
+        debug!("mouse left press");
 
         for (entity, transform, shape, maybe_movable_by_cursor, _maybe_base_position) in
             query.iter_mut()
@@ -131,24 +130,16 @@ pub fn cursor_select(
                 if let Some(mut _movable_by_cursor) = maybe_movable_by_cursor {
                     cmd.entity(entity).insert(IsMoving::default());
                 }
-                // For Debug
-                // info!(
-                //     "Card at position ({}, {}) is now {}",
-                //     transform.translation.x,
-                //     transform.translation.y,
-                //     if selectable.is_selected {
-                //         "selected"
-                //     } else {
-                //         "deselected"
-                //     }
-                // );
+                debug!(
+                    "Card at position ({}, {}) is now selected",
+                    transform.translation.x, transform.translation.y,
+                );
             }
         }
     }
     if mouse_button_input.just_released(MouseButton::Left) {
         click_position.position = Vec2::ZERO;
-        // For Debug
-        // info!("mouse left release");
+        debug!("mouse left release");
 
         for (entity, transform, shape, maybe_movable_by_cursor, maybe_base_position) in
             query.iter_mut()
@@ -162,17 +153,10 @@ pub fn cursor_select(
                         base_position.position.y = transform.translation.y;
                     }
                 }
-                // For Debug
-                // info!(
-                //     "Card at position ({}, {}) is now {}",
-                //     transform.translation.x,
-                //     transform.translation.y,
-                //     if selectable.is_selected {
-                //         "selected"
-                //     } else {
-                //         "deselected"
-                //     }
-                // );
+                debug!(
+                    "Card at position ({}, {}) is now unselected",
+                    transform.translation.x, transform.translation.y
+                )
             }
         }
     }
@@ -205,8 +189,7 @@ pub fn get_cursor_world_position(
         .map(|ray| ray.origin.truncate())
     {
         cursor_world_position.position = world_position;
-        // For Debug
-        // info!("cursor position: {},{}", world_position.x, world_position.y);
+        trace!("cursor position: {},{}", world_position.x, world_position.y);
     }
 }
 
@@ -223,11 +206,10 @@ pub fn card_hover(
     mut removed_hovering: RemovedComponents<Hovering>,
 ) {
     for (mut transform, base_posotion) in query1.iter_mut() {
-        // For Debug
-        // info!(
-        //     "Hovering over card at position: ({}, {})",
-        //     transform.translation.x, transform.translation.y
-        // );
+        trace!(
+            "Hovering over card at position: ({}, {})",
+            transform.translation.x, transform.translation.y
+        );
 
         transform.translation.z = 2.0;
 
@@ -246,8 +228,7 @@ pub fn card_hover(
             transform.translation.x = base_position.position.x;
             transform.translation.y = base_position.position.y;
             transform.translation.z = base_position.position.z;
-            // For Debug
-            // info!("reset");
+            debug!("hover over,reset position");
         }
     }
 }

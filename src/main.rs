@@ -1,23 +1,16 @@
-// mod main_menu;
 mod components;
 mod resources;
 mod systems;
 
-// use crate::main_menu::MainMenuPlugin;
 use resources::*;
 use systems::*;
 
-use bevy::prelude::*;
+use bevy::{
+    log::{Level, LogPlugin},
+    prelude::*,
+};
 use bevy_aseprite_ultra::prelude::*;
 use bevy_hanabi::prelude::*;
-
-// #[derive(States, Clone, Eq, PartialEq, Debug, Hash, Default)]
-// enum AppState {
-//     #[default]
-//     MainMenu,
-//     InGame,
-//     Paused,
-// }
 
 fn main() {
     let mut app = App::new();
@@ -29,10 +22,12 @@ fn main() {
                 mode: AssetMode::Processed,
                 ..Default::default()
             })
-            .set(ImagePlugin::default_nearest()),
+            .set(ImagePlugin::default_nearest())
+            .set(LogPlugin {
+                level: Level::INFO,
+                ..Default::default()
+            }),
     );
-    // app.init_state::<AppState>();
-    // app.add_plugins(MainMenuPlugin);
     app.add_plugins(AsepriteUltraPlugin);
     app.add_plugins(HanabiPlugin);
     app.insert_resource(Time::<Fixed>::from_hz(60.0));
