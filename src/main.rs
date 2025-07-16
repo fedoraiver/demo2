@@ -42,9 +42,8 @@ fn main() {
     app.add_systems(Startup, setup_camera);
     app.add_systems(Startup, setup_background);
     app.add_systems(Update, get_cursor_world_position);
-    app.add_systems(Update, cursor_hover);
-    app.add_systems(Update, card_hover);
     app.add_systems(Update, card_move_by_cursor);
+    app.add_systems(Update, (cursor_hover, card_hover).chain());
     app.add_systems(Update, (item_move, cursor_select).chain());
     app.add_systems(Update, exit_game);
     app.run();

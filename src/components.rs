@@ -3,10 +3,11 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct CardMarker;
 
-#[derive(Component, Default)]
-pub struct Hoverable {
-    pub is_hovering: bool,
-}
+#[derive(Component)]
+pub struct Hoverable;
+
+#[derive(Component)]
+pub struct Hovering;
 
 #[derive(Component)]
 pub struct Selectable;

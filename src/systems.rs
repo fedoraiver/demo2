@@ -65,7 +65,7 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                     width: CARD_WIDTH,
                     height: CARD_HEIGHT,
                 },
-                Hoverable::default(),
+                Hoverable,
                 Selectable,
                 Movable {
                     movable_by_cursor: true,
@@ -91,14 +91,15 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
 }
 
 pub fn cursor_hover(
-    mut query: Query<(&Transform, &Shape, &mut Hoverable)>,
+    mut query: Query<(Entity, &Transform, &Shape), With<Hoverable>>,
     cursor_position: Res<CursorWorldPosition>,
+    mut cmd: Commands,
 ) {
-    for (transform, shape, mut hoverable) in query.iter_mut() {
+    for (entity, transform, shape) in query.iter_mut() {
         if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
-            hoverable.is_hovering = true;
+            cmd.entity(entity).insert(Hovering);
         } else {
-            hoverable.is_hovering = false;
+            cmd.entity(entity).remove::<Hovering>();
         }
     }
 }
@@ -213,34 +214,42 @@ pub fn get_cursor_world_position(
 
 pub fn card_hover(
     time: Res<Time>,
-    mut query: Query<
-        (&Hoverable, &mut Transform, &BasePosition),
-        (With<CardMarker>, Changed<Hoverable>, Without<Selected>),
+    mut query1: Query<
+        (&mut Transform, &BasePosition),
+        (With<CardMarker>, Without<Selected>, With<Hovering>),
     >,
+    mut query2: Query<
+        (&mut Transform, &BasePosition),
+        (With<CardMarker>, Without<Selected>, Without<Hovering>),
+    >,
+    mut removed_hovering: RemovedComponents<Hovering>,
 ) {
-    for (hoverable, mut transform, base_posotion) in query.iter_mut() {
-        if hoverable.is_hovering {
+    for (mut transform, base_posotion) in query1.iter_mut() {
+        // For Debug
+        // info!(
+        //     "Hovering over card at position: ({}, {})",
+        //     transform.translation.x, transform.translation.y
+        // );
+
+        transform.translation.z = 2.0;
+
+        let t = time.elapsed_secs_f64();
+        let amplitude = 2.0;
+        let speed = 2.0;
+
+        let offset_x = (t * speed).sin() as f32 * amplitude;
+        let offset_y = (t * speed).cos() as f32 * amplitude * 0.4;
+
+        transform.translation.x = base_posotion.position.x + offset_x;
+        transform.translation.y = base_posotion.position.y + offset_y;
+    }
+    for entity in removed_hovering.read() {
+        if let Ok((mut transform, base_position)) = query2.get_mut(entity) {
+            transform.translation.x = base_position.position.x;
+            transform.translation.y = base_position.position.y;
+            transform.translation.z = base_position.position.z;
             // For Debug
-            // info!(
-            //     "Hovering over card at position: ({}, {})",
-            //     transform.translation.x, transform.translation.y
-            // );
-
-            transform.translation.z = 2.0;
-
-            let t = time.elapsed_secs_f64();
-            let amplitude = 2.0;
-            let speed = 2.0;
-
-            let offset_x = (t * speed).sin() as f32 * amplitude;
-            let offset_y = (t * speed).cos() as f32 * amplitude * 0.4;
-
-            transform.translation.x = base_posotion.position.x + offset_x;
-            transform.translation.y = base_posotion.position.y + offset_y;
-        } else {
-            transform.translation.x = base_posotion.position.x;
-            transform.translation.y = base_posotion.position.y;
-            transform.translation.z = base_posotion.position.z;
+            // info!("reset");
         }
     }
 }
