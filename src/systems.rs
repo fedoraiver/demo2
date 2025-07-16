@@ -66,7 +66,7 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                     height: CARD_HEIGHT,
                 },
                 Hoverable::default(),
-                Selectable::default(),
+                Selectable,
                 Movable {
                     movable_by_cursor: true,
                     ..Default::default()
@@ -104,27 +104,29 @@ pub fn cursor_hover(
 }
 
 pub fn cursor_select(
-    mut query: Query<(
-        &mut Transform,
-        &Shape,
-        &mut Selectable,
-        Option<&mut Movable>,
-        Option<&mut BasePosition>,
-    )>,
+    mut query: Query<
+        (
+            Entity,
+            &mut Transform,
+            &Shape,
+            Option<&mut Movable>,
+            Option<&mut BasePosition>,
+        ),
+        With<Selectable>,
+    >,
     cursor_position: Res<CursorWorldPosition>,
     mut click_position: ResMut<ClickWorldPosition>,
     mouse_button_input: Res<ButtonInput<MouseButton>>,
+    mut cmd: Commands,
 ) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
         click_position.position = cursor_position.position.clone();
         // For Debug
         // info!("mouse left press");
 
-        for (transform, shape, mut selectable, maybe_movable, _maybe_base_position) in
-            query.iter_mut()
-        {
+        for (entity, transform, shape, maybe_movable, _maybe_base_position) in query.iter_mut() {
             if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
-                selectable.is_selected = true;
+                cmd.entity(entity).insert(Selected);
                 if let Some(mut movable) = maybe_movable {
                     if movable.movable_by_cursor {
                         movable.is_moving = true;
@@ -149,11 +151,9 @@ pub fn cursor_select(
         // For Debug
         // info!("mouse left release");
 
-        for (transform, shape, mut selectable, maybe_movable, maybe_base_position) in
-            query.iter_mut()
-        {
+        for (entity, transform, shape, maybe_movable, maybe_base_position) in query.iter_mut() {
             if shape.contains_point(&transform.translation.truncate(), &cursor_position.position) {
-                selectable.is_selected = false;
+                cmd.entity(entity).remove::<Selected>();
                 if let Some(mut movable) = maybe_movable {
                     if movable.movable_by_cursor {
                         movable.is_moving = false;
@@ -214,16 +214,11 @@ pub fn get_cursor_world_position(
 pub fn card_hover(
     time: Res<Time>,
     mut query: Query<
-        (
-            &Hoverable,
-            &mut Transform,
-            &BasePosition,
-            Option<&Selectable>,
-        ),
-        (With<CardMarker>, Changed<Hoverable>),
+        (&Hoverable, &mut Transform, &BasePosition),
+        (With<CardMarker>, Changed<Hoverable>, Without<Selected>),
     >,
 ) {
-    for (hoverable, mut transform, base_posotion, maybe_selectable) in query.iter_mut() {
+    for (hoverable, mut transform, base_posotion) in query.iter_mut() {
         if hoverable.is_hovering {
             // For Debug
             // info!(
@@ -231,11 +226,6 @@ pub fn card_hover(
             //     transform.translation.x, transform.translation.y
             // );
 
-            if let Some(selectable) = maybe_selectable {
-                if selectable.is_selected {
-                    return;
-                }
-            }
             transform.translation.z = 2.0;
 
             let t = time.elapsed_secs_f64();

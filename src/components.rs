@@ -8,10 +8,11 @@ pub struct Hoverable {
     pub is_hovering: bool,
 }
 
-#[derive(Component, Default)]
-pub struct Selectable {
-    pub is_selected: bool,
-}
+#[derive(Component)]
+pub struct Selectable;
+
+#[derive(Component)]
+pub struct Selected;
 
 #[derive(Component, Default)]
 pub struct Movable {
