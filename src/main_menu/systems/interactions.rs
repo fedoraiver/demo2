@@ -1,4 +1,5 @@
 use crate::main_menu::styles::*;
+use crate::states::AppState;
 
 use bevy::prelude::*;
 
@@ -9,6 +10,7 @@ pub fn interact_with_play_button(
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<PlayButton>),
     >,
+    mut app_state_next_state: ResMut<NextState<AppState>>,
 ) {
     let (interaction, mut background_color) = match query.single_mut() {
         Ok((interaction, background_color)) => (interaction, background_color),
@@ -19,6 +21,7 @@ pub fn interact_with_play_button(
     match *interaction {
         Interaction::Pressed => {
             *background_color = PRESSED_BUTTON_COLOR.into();
+            app_state_next_state.set(AppState::InGame);
         }
         Interaction::Hovered => {
             *background_color = HOVERED_BUTTON_COLOR.into();
@@ -34,6 +37,7 @@ pub fn interact_with_quit_button(
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<QuitButton>),
     >,
+    mut exit: EventWriter<AppExit>,
 ) {
     let (interaction, mut background_color) = match query.single_mut() {
         Ok((interaction, background_color)) => (interaction, background_color),
@@ -44,6 +48,7 @@ pub fn interact_with_quit_button(
     match *interaction {
         Interaction::Pressed => {
             *background_color = PRESSED_BUTTON_COLOR.into();
+            exit.write(AppExit::Success);
         }
         Interaction::Hovered => {
             *background_color = HOVERED_BUTTON_COLOR.into();

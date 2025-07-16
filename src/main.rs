@@ -29,16 +29,19 @@ fn main() {
     app.add_plugins(MainMenuPlugin);
     app.add_plugins(AsepriteUltraPlugin);
     app.add_plugins(HanabiPlugin);
-    app.insert_resource(Time::<Fixed>::from_hz(60.0));
+    // app.insert_resource(Time::<Fixed>::from_hz(60.0));
     app.init_resource::<CursorWorldPosition>();
     app.init_resource::<ClickWorldPosition>();
-    app.add_systems(Startup, register_particle_effect);
-    app.add_systems(Startup, setup_camera);
+    app.add_systems(Startup, (setup_camera, register_particle_effect));
     app.add_systems(OnEnter(AppState::InGame), setup_background);
-    app.add_systems(Update, get_cursor_world_position);
-    app.add_systems(Update, card_move_by_cursor);
-    app.add_systems(Update, (cursor_hover, card_hover).chain());
-    app.add_systems(Update, (item_move, cursor_select).chain());
-    app.add_systems(Update, exit_game);
+    app.add_systems(
+        Update,
+        (
+            (get_cursor_world_position, card_move_by_cursor, exit_game),
+            (cursor_hover, card_hover).chain(),
+            (item_move, cursor_select).chain(),
+        )
+            .run_if(in_state(AppState::InGame)),
+    );
     app.run();
 }

@@ -276,7 +276,7 @@ pub fn exit_game(keyboard_input: Res<ButtonInput<KeyCode>>, mut exit: EventWrite
     }
 }
 
-pub fn register_particle_effect(mut cmd: Commands, mut effects: ResMut<Assets<EffectAsset>>) {
+pub fn register_particle_effect(mut effects: ResMut<Assets<EffectAsset>>) {
     let mut gradient = Gradient::new();
     gradient.add_key(0.0, Vec4::new(1.0, 0.0, 0.0, 1.0));
     gradient.add_key(1.0, Vec4::new(0.0, 0.0, 1.0, 1.0));
