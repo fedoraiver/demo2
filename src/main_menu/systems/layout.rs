@@ -1,6 +1,6 @@
-use bevy::{ecs::query, prelude::*};
+use crate::main_menu::{self, components::*, styles::*};
 
-use crate::main_menu::{self, components::MainMenu};
+use bevy::{ecs::query, prelude::*};
 
 pub fn spawn_main_menu(mut cmd: Commands, asset_server: Res<AssetServer>) {
     let main_menu_entity = build_main_menu(&mut cmd, &asset_server);
@@ -24,17 +24,41 @@ pub fn build_main_menu(cmd: &mut Commands, asset_server: &Res<AssetServer>) -> E
                 Node {
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
+                    flex_direction: FlexDirection::Column,
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    row_gap: Val::Px(8.0),
+                    column_gap: Val::Px(8.0),
                     ..Default::default()
                 },
-                BackgroundColor(Color::Srgba(Srgba {
-                    red: (0.0),
-                    green: (0.0),
-                    blue: (1.0),
-                    alpha: (0.5),
-                })),
+                BackgroundColor(NORMAL_BACKGROUND_COLOR),
                 MainMenu,
             ),
-            children![],
+            children![
+                //Tile
+                //Start button
+                (
+                    (
+                        normal_button_style_node(),
+                        BackgroundColor(NORMAL_BUTTON_COLOR),
+                        Button,
+                        PlayButton
+                    ),
+                    // Text
+                    children![Text("Start".into())]
+                ),
+                //Quit button
+                (
+                    (
+                        normal_button_style_node(),
+                        BackgroundColor(NORMAL_BUTTON_COLOR),
+                        Button,
+                        QuitButton
+                    ),
+                    // Text
+                    children![Text("Quit".into())]
+                )
+            ],
         ))
         .id();
 
