@@ -46,10 +46,6 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
                 },
                 Transform::from_xyz(pos_x, pos_y, 0.0),
                 CardMarker,
-                Shape::Rect {
-                    width: CARD_WIDTH,
-                    height: CARD_HEIGHT,
-                },
                 Hoverable,
                 Selectable,
                 MovableByCursor,

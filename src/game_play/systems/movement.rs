@@ -1,13 +1,18 @@
-use crate::game_play::components::*;
+use crate::{game_play::components::*, resources::*};
 
 use bevy::prelude::*;
-
 pub fn movement_card(
-    mut query: Query<(&IsMoving, &mut Transform, &mut BasePosition), (With<CardMarker>)>,
-    time: Res<Time>,
+    mut query: Query<(&IsMoving, &mut Transform, &mut BasePosition), With<CardMarker>>,
+    cursor_position: Res<CursorWorldPosition>,
+    cursor_position_last_frame: Res<CursorWorldPositionLastFrame>,
 ) {
     for (is_moving, mut transform, mut base_position) in query.iter_mut() {
+        let v = cursor_position.position - cursor_position_last_frame.position;
+        let r = cursor_position.position - transform.translation.xy();
+        let delta_angle = r.extend(0.0).cross(v.extend(0.0)).z * 0.00005;
+
         transform.translation += is_moving.target_transform.translation;
         base_position.position = transform.translation;
+        transform.rotate_z(delta_angle);
     }
 }

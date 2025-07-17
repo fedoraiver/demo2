@@ -62,6 +62,7 @@ fn main() {
     }
 
     app.init_resource::<CursorWorldPosition>();
+    app.init_resource::<CursorWorldPositionLastFrame>();
     app.init_resource::<ClickWorldPosition>();
 
     app.add_systems(Startup, register_particle_effect);

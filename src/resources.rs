@@ -4,6 +4,10 @@ use bevy::prelude::*;
 pub struct CursorWorldPosition {
     pub position: Vec2,
 }
+#[derive(Resource, Default)]
+pub struct CursorWorldPositionLastFrame {
+    pub position: Vec2,
+}
 
 #[derive(Resource, Default)]
 pub struct ClickWorldPosition {
