@@ -65,12 +65,11 @@ pub fn cursor_unselect(
 pub fn cursor_movement(
     mut query: Query<&mut IsMoving>,
     cursor_position: Res<CursorWorldPosition>,
-    mut cursor_world_posision_last_frame: ResMut<CursorWorldPositionLastFrame>,
+    cursor_world_posision_last_frame: Res<CursorWorldPositionLastFrame>,
 ) {
     for mut is_moving in query.iter_mut() {
         is_moving.target_transform = Transform::from_translation(
             (cursor_position.position - cursor_world_posision_last_frame.position).extend(0.0),
         );
     }
-    cursor_world_posision_last_frame.position = cursor_position.position;
 }

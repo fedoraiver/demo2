@@ -112,3 +112,10 @@ pub fn get_cursor_world_position(
         trace!("cursor position: {},{}", world_position.x, world_position.y);
     }
 }
+
+pub fn update_cursor_positon_last_frame(
+    cursor_position: Res<CursorWorldPosition>,
+    mut cursor_position_last_frame: ResMut<CursorWorldPositionLastFrame>,
+) {
+    cursor_position_last_frame.position = cursor_position.position;
+}

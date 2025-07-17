@@ -19,15 +19,23 @@ impl Plugin for GamePlayPlugin {
         app.add_systems(
             Update,
             (
-                get_cursor_world_position,
-                cursor_movement,
                 cursor_select,
                 cursor_unselect,
                 movement_card,
                 cursor_hover,
                 hover_card,
+                cursor_movement,
             )
                 .run_if(in_state(AppState::InGame)),
+        );
+
+        app.add_systems(
+            PreUpdate,
+            get_cursor_world_position.run_if(in_state(AppState::InGame)),
+        );
+        app.add_systems(
+            PostUpdate,
+            update_cursor_positon_last_frame.run_if(in_state(AppState::InGame)),
         );
     }
 }
