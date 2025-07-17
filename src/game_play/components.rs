@@ -27,7 +27,18 @@ pub struct MovableByCursor;
 #[derive(Component, Default)]
 #[require(Movable)]
 pub struct IsMoving {
-    pub delta: Vec2,
+    pub target_transform: Transform,
+}
+impl IsMoving {
+    pub fn new(transform: Transform) -> Self {
+        Self {
+            target_transform: Transform {
+                translation: Vec3::ZERO,
+                rotation: transform.rotation,
+                scale: transform.scale,
+            },
+        }
+    }
 }
 
 #[derive(Component, Debug, Clone, Copy)]
