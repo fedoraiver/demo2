@@ -1,4 +1,5 @@
 use crate::{game_play::components::*, resources::*};
+const ROTATE_PARAMETER: f32 = 4e-5;
 
 use bevy::prelude::*;
 pub fn movement_card(
@@ -9,7 +10,7 @@ pub fn movement_card(
     for (is_moving, mut transform, mut base_position) in query.iter_mut() {
         let v = cursor_position.position - cursor_position_last_frame.position;
         let r = cursor_position.position - transform.translation.xy();
-        let delta_angle = r.extend(0.0).cross(v.extend(0.0)).z * 0.00005;
+        let delta_angle = r.extend(0.0).cross(v.extend(0.0)).z * ROTATE_PARAMETER;
 
         transform.translation += is_moving.target_transform.translation;
         base_position.position = transform.translation;
