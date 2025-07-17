@@ -3,6 +3,13 @@ mod main_menu;
 mod resources;
 mod states;
 mod systems;
+#[cfg(feature = "bevy_screen_diagnostics_plugin")]
+mod diagnostics {
+    pub use bevy_screen_diagnostics::*;
+
+    #[cfg(feature = "sysinfo_plugin")]
+    pub use bevy_screen_diagnostics::ScreenSystemInformationDiagnosticsPlugin;
+}
 
 use crate::main_menu::MainMenuPlugin;
 use resources::*;
@@ -32,15 +39,33 @@ fn main() {
                 ..Default::default()
             }),
     );
+
     app.init_state::<AppState>();
     app.add_plugins(MainMenuPlugin);
+
     app.add_plugins(AsepriteUltraPlugin);
+
     app.add_plugins(HanabiPlugin);
+
+    #[cfg(feature = "bevy_screen_diagnostics_plugin")]
+    {
+        app.add_plugins(diagnostics::ScreenDiagnosticsPlugin::default())
+            .add_plugins(diagnostics::ScreenFrameDiagnosticsPlugin)
+            .add_plugins(diagnostics::ScreenEntityDiagnosticsPlugin);
+
+        #[cfg(feature = "sysinfo_plugin")]
+        app.add_plugins(diagnostics::ScreenSystemInformationDiagnosticsPlugin);
+    }
+
     // app.insert_resource(Time::<Fixed>::from_hz(60.0));
+
     app.init_resource::<CursorWorldPosition>();
     app.init_resource::<ClickWorldPosition>();
+
     app.add_systems(Startup, (setup_camera, register_particle_effect));
+
     app.add_systems(OnEnter(AppState::InGame), setup_background);
+
     app.add_systems(
         Update,
         (
@@ -50,6 +75,8 @@ fn main() {
         )
             .run_if(in_state(AppState::InGame)),
     );
+
     app.add_systems(Update, toggle_pause_state);
+
     app.run();
 }

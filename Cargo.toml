@@ -9,6 +9,7 @@ bevy_aseprite_ultra = "*"
 rmp-serde = { version = "*", optional = true }
 image = { version = "*", optional = true }
 bevy_hanabi = {version = "*"}
+bevy_screen_diagnostics= {version ="*", optional = true}
 
 [profile.dev]
 opt-level = 0
@@ -17,10 +18,12 @@ opt-level = 0
 opt-level = 3
 
 [features]
-asset_processing = [  
+asset_processing_plugin = [  
     "bevy/serialize",
     "bevy/qoi",
     "dep:rmp-serde",
     "dep:image",
     "bevy/asset_processor"
 ]
+bevy_screen_diagnostics_plugin=["dep:bevy_screen_diagnostics"]
+sysinfo_plugin=["bevy_screen_diagnostics/sysinfo_plugin"]
