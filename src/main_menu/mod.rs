@@ -4,9 +4,10 @@ mod systems;
 
 use crate::main_menu::systems::interactions::*;
 
-use super::states::AppState;
+use crate::states::AppState;
 use bevy::prelude::*;
 use systems::layout::*;
+
 pub struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {

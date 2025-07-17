@@ -1,4 +1,5 @@
 mod components;
+mod game_play;
 mod main_menu;
 mod resources;
 mod states;
@@ -11,7 +12,8 @@ mod diagnostics {
     pub use bevy_screen_diagnostics::ScreenSystemInformationDiagnosticsPlugin;
 }
 
-use crate::main_menu::MainMenuPlugin;
+use crate::game_play::*;
+use crate::main_menu::*;
 use resources::*;
 use states::*;
 use systems::*;
@@ -20,7 +22,7 @@ use bevy::{
     log::{Level, LogPlugin},
     prelude::*,
 };
-use bevy_aseprite_ultra::prelude::*;
+use bevy_aseprite_ultra::*;
 use bevy_hanabi::prelude::*;
 
 fn main() {
@@ -47,6 +49,8 @@ fn main() {
 
     app.add_plugins(HanabiPlugin);
 
+    app.add_plugins(GamePlayPlugin);
+
     #[cfg(feature = "bevy_screen_diagnostics_plugin")]
     {
         app.add_plugins(diagnostics::ScreenDiagnosticsPlugin::default())
@@ -57,24 +61,10 @@ fn main() {
         app.add_plugins(diagnostics::ScreenSystemInformationDiagnosticsPlugin);
     }
 
-    // app.insert_resource(Time::<Fixed>::from_hz(60.0));
-
     app.init_resource::<CursorWorldPosition>();
     app.init_resource::<ClickWorldPosition>();
 
-    app.add_systems(Startup, (setup_camera, register_particle_effect));
-
-    app.add_systems(OnEnter(AppState::InGame), setup_background);
-
-    app.add_systems(
-        Update,
-        (
-            (get_cursor_world_position, card_move_by_cursor),
-            (cursor_hover, card_hover).chain(),
-            (item_move, cursor_select).chain(),
-        )
-            .run_if(in_state(AppState::InGame)),
-    );
+    app.add_systems(Startup, register_particle_effect);
 
     app.add_systems(Update, toggle_pause_state);
 
