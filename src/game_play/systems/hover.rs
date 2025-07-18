@@ -2,6 +2,15 @@ use crate::game_play::components::*;
 
 use bevy::prelude::*;
 
+pub fn hover_card_offset(time: f32) -> (f32, f32) {
+    let amplitude = 2.0;
+    let speed = 2.0;
+    (
+        (time * speed).sin() as f32 * amplitude,
+        (time * speed).cos() as f32 * amplitude * 0.4,
+    )
+}
+
 pub fn hover_card(
     time: Res<Time>,
     mut query1: Query<
@@ -22,13 +31,7 @@ pub fn hover_card(
 
         transform.translation.z = 2.0;
 
-        let t = time.elapsed_secs_f64();
-        let amplitude = 2.0;
-        let speed = 2.0;
-
-        let offset_x = (t * speed).sin() as f32 * amplitude;
-        let offset_y = (t * speed).cos() as f32 * amplitude * 0.4;
-
+        let (offset_x, offset_y) = hover_card_offset(time.elapsed_secs());
         transform.translation.x = base_posotion.position.x + offset_x;
         transform.translation.y = base_posotion.position.y + offset_y;
     }
