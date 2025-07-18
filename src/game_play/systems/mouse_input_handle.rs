@@ -8,9 +8,18 @@ pub fn cursor_hover(
     cursor_position: Res<CursorWorldPosition>,
     mut cmd: Commands,
 ) {
+    let mut z_max_entity_opt: Option<Entity> = None;
+    let mut z_max = -10.0;
     for (entity, transform, sprite) in query.iter_mut() {
         if (sprite, transform).contains_point(cursor_position.position) {
-            cmd.entity(entity).insert(Hovering);
+            if transform.translation.z >= z_max {
+                if let Some(z_max_entity) = z_max_entity_opt {
+                    cmd.entity(z_max_entity).remove::<Hovering>();
+                }
+                cmd.entity(entity).insert(Hovering);
+                z_max = transform.translation.z;
+                z_max_entity_opt = Some(entity);
+            }
         } else {
             cmd.entity(entity).remove::<Hovering>();
         }
@@ -25,15 +34,30 @@ pub fn cursor_select(
     mut cmd: Commands,
 ) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
+        let mut z_max_entity_opt: Option<Entity> = None;
+        let mut z_max = -10.0;
+
         click_position.position = cursor_position.position;
         debug!("mouse left press");
 
         for (entity, transform, sprite, maybe_movable_by_cursor) in query.iter_mut() {
             if (sprite, transform).contains_point(cursor_position.position) {
-                cmd.entity(entity).insert(Selected);
-                if let Some(mut _movable_by_cursor) = maybe_movable_by_cursor {
-                    cmd.entity(entity).insert(IsMoving::new(*transform));
+                if transform.translation.z >= z_max {
+                    if let Some(z_max_entity) = z_max_entity_opt {
+                        cmd.entity(z_max_entity).remove::<Selected>();
+                        cmd.entity(z_max_entity).remove::<IsMoving>();
+                    }
+                    cmd.entity(entity).insert(Selected);
+                    if let Some(mut _movable_by_cursor) = maybe_movable_by_cursor {
+                        cmd.entity(entity).insert(IsMoving::new(*transform));
+                    }
+                    z_max = transform.translation.z;
+                    z_max_entity_opt = Some(entity);
                 }
+            }
+        }
+        if let Some(z_max_entity) = z_max_entity_opt {
+            if let Ok((_entity, transform, _sprite, _movable_by_cursor)) = query.get(z_max_entity) {
                 debug!(
                     "Card at position ({}, {}) is now selected",
                     transform.translation.x, transform.translation.y,

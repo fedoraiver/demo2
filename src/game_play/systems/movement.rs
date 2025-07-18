@@ -6,7 +6,6 @@ pub fn movement_card(
     mut query: Query<(&IsMoving, &mut Transform, &mut BasePosition), With<CardMarker>>,
     cursor_position: Res<CursorWorldPosition>,
     cursor_position_last_frame: Res<CursorWorldPositionLastFrame>,
-    time: Res<Time>,
 ) {
     for (is_moving, mut transform, mut base_position) in query.iter_mut() {
         let v = cursor_position.position - cursor_position_last_frame.position;
