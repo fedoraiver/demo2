@@ -12,6 +12,7 @@ pub fn hover_card_offset(time: f32) -> (f32, f32) {
 }
 
 pub fn hover_card(
+    mut cmd: Commands,
     time: Res<Time>,
     mut query1: Query<
         (&mut Transform, &BasePosition),
@@ -20,6 +21,15 @@ pub fn hover_card(
     mut query2: Query<
         (&mut Transform, &BasePosition),
         (With<CardMarker>, Without<Selected>, Without<Hovering>),
+    >,
+    query3: Query<
+        (Entity, &mut Transform),
+        (
+            With<CardMarker>,
+            Without<Selected>,
+            With<Hovering>,
+            Without<BasePosition>,
+        ),
     >,
     mut removed_hovering: RemovedComponents<Hovering>,
 ) {
@@ -40,7 +50,13 @@ pub fn hover_card(
             transform.translation.x = base_position.position.x;
             transform.translation.y = base_position.position.y;
             transform.translation.z = base_position.position.z;
+            cmd.entity(entity).remove::<BasePosition>();
             debug!("hover over,reset position");
         }
+    }
+    for (entity, transform) in query3.iter() {
+        cmd.entity(entity).insert(BasePosition {
+            position: transform.translation,
+        });
     }
 }

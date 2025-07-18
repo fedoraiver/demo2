@@ -79,6 +79,7 @@ pub fn cursor_unselect(
 
         for (entity, maybe_movable_by_cursor) in query.iter_mut() {
             cmd.entity(entity).remove::<Selected>();
+            cmd.entity(entity).remove::<BasePosition>();
             if let Some(mut _movable) = maybe_movable_by_cursor {
                 cmd.entity(entity).remove::<IsMoving>();
             }

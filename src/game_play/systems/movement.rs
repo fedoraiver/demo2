@@ -3,11 +3,11 @@ const ROTATE_PARAMETER: f32 = 8e-6;
 
 use bevy::prelude::*;
 pub fn movement_card(
-    mut query: Query<(&mut IsMoving, &mut Transform, &mut BasePosition), With<CardMarker>>,
+    mut query: Query<(&mut IsMoving, &mut Transform), With<CardMarker>>,
     cursor_position: Res<CursorWorldPosition>,
     cursor_position_last_frame: Res<CursorWorldPositionLastFrame>,
 ) {
-    for (mut is_moving, mut transform, mut base_position) in query.iter_mut() {
+    for (mut is_moving, mut transform) in query.iter_mut() {
         let v = cursor_position.position - cursor_position_last_frame.position;
         let r = cursor_position.position - transform.translation.xy();
         let delta_angle = r.extend(0.0).cross(v.extend(0.0)).z * ROTATE_PARAMETER;
@@ -16,7 +16,7 @@ pub fn movement_card(
 
         *transform = is_moving.target_transform;
         // transform.translation += is_moving.target_transform.translation;
-        base_position.position = transform.translation;
+        // base_position.position = transform.translation;
         // transform.rotate_z(delta_angle);
     }
 }
