@@ -94,6 +94,7 @@ pub fn cursor_movement(
     for mut is_moving in query.iter_mut() {
         is_moving.target_transform = Transform::from_translation(
             (cursor_position.position - cursor_world_posision_last_frame.position).extend(0.0),
-        );
+        )
+        .mul_transform(is_moving.target_transform);
     }
 }

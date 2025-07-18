@@ -32,11 +32,7 @@ pub struct IsMoving {
 impl IsMoving {
     pub fn new(transform: Transform) -> Self {
         Self {
-            target_transform: Transform {
-                translation: Vec3::ZERO,
-                rotation: transform.rotation,
-                scale: transform.scale,
-            },
+            target_transform: transform,
         }
     }
 }
