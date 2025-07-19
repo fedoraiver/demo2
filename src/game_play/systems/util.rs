@@ -1,8 +1,8 @@
 use crate::game_play::components::*;
+use crate::game_play::systems::mouse_input_handle::*;
 use crate::resources::*;
 
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 use bevy_aseprite_ultra::prelude::*;
 use strum::*;
 
@@ -67,44 +67,6 @@ pub fn setup_camera(mut cmd: Commands) {
     ));
 }
 
-pub fn get_cursor_world_position(
-    mut cursor_world_position: ResMut<CursorWorldPosition>,
-    q_window: Query<&Window, With<PrimaryWindow>>,
-    q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
-) {
-    let (camera, camera_transform) = match q_camera.single() {
-        Ok((camera, transform)) => (camera, transform),
-        Err(_) => {
-            error!("No main camera found!");
-            return;
-        }
-    };
-
-    let window = match q_window.single() {
-        Ok(window) => window,
-        Err(_) => {
-            error!("No primary window found!");
-            return;
-        }
-    };
-
-    if let Some(world_position) = window
-        .cursor_position()
-        .and_then(|cursor| camera.viewport_to_world(camera_transform, cursor).ok())
-        .map(|ray| ray.origin.truncate())
-    {
-        cursor_world_position.position = world_position;
-        trace!("cursor position: {},{}", world_position.x, world_position.y);
-    }
-}
-
-pub fn update_cursor_positon_last_frame(
-    cursor_position: Res<CursorWorldPosition>,
-    mut cursor_position_last_frame: ResMut<CursorWorldPositionLastFrame>,
-) {
-    cursor_position_last_frame.position = cursor_position.position;
-}
-
 pub fn spawn_poker_card(
     cmd: &mut Commands,
     aseprite_handle: Handle<Aseprite>,
@@ -123,10 +85,19 @@ pub fn spawn_poker_card(
             ..Default::default()
         },
         transform,
+        Pickable::default(),
         CardMarker,
         Hoverable,
         Selectable,
         MovableByCursor,
     ))
+    .observe(cursor_over_on_hoverble_item)
+    .observe(mock_cursor_over_on_hoverble_item)
+    .observe(cursor_out_on_hoverable_item)
+    .observe(mock_cursor_out_on_hoverable_item)
+    .observe(cursor_click_on_selectable_item)
+    .observe(cursor_drag_start_on_movable_by_cursor_item)
+    .observe(cursor_move_on_movable_by_cursor_item)
+    .observe(cursor_drag_end_on_movable_by_cursor_item)
     .id()
 }

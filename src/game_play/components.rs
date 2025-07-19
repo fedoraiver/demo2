@@ -46,36 +46,6 @@ pub struct BasePosition {
 #[derive(Component)]
 pub struct MainCamera;
 
-pub trait ContainsPoint {
-    fn contains_point(&self, point: Vec2) -> bool;
-}
-
-impl ContainsPoint for (&Sprite, &Transform) {
-    fn contains_point(&self, point: Vec2) -> bool {
-        let (sprite, transform) = *self;
-
-        let size = match sprite.custom_size {
-            Some(size) => size,
-            None => {
-                error!("Sprite missing custom_size");
-                return false;
-            }
-        };
-
-        let half_size = size / 2.0;
-
-        let local_point = transform
-            .compute_matrix()
-            .inverse()
-            .transform_point(point.extend(0.0));
-
-        local_point.x >= -half_size.x
-            && local_point.x <= half_size.x
-            && local_point.y >= -half_size.y
-            && local_point.y <= half_size.y
-    }
-}
-
 #[derive(Debug, Clone, Copy, EnumIter)]
 pub enum PokerSuit {
     Clubs,

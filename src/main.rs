@@ -37,15 +37,13 @@ fn main() {
             })
             .set(ImagePlugin::default_nearest())
             .set(LogPlugin {
-                level: Level::INFO,
+                level: Level::DEBUG,
                 ..Default::default()
             }),
     );
 
-    app.init_resource::<CursorWorldPosition>();
-    app.init_resource::<CursorWorldPositionLastFrame>();
-    app.init_resource::<ClickWorldPosition>();
     app.init_resource::<AsepriteHandle>();
+    app.init_resource::<ZIndexManager>();
     app.init_state::<AppState>();
 
     app.add_plugins(MainMenuPlugin);

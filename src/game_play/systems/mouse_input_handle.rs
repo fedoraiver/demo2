@@ -1,101 +1,130 @@
-use crate::game_play::components::*;
-use crate::resources::*;
+use crate::{game_play::components::*, resources::*};
 
 use bevy::prelude::*;
 
-pub fn cursor_hover(
-    mut query: Query<(Entity, &Transform, &Sprite), With<Hoverable>>,
-    cursor_position: Res<CursorWorldPosition>,
+#[derive(Event)]
+pub struct MockPointerOut;
+#[derive(Event)]
+pub struct MockPointerover;
+
+pub fn cursor_over_on_hoverble_item(
+    trigger: Trigger<Pointer<Over>>,
+    mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
+    mut z_index_manager: ResMut<ZIndexManager>,
 ) {
-    let mut z_max_entity_opt: Option<Entity> = None;
-    let mut z_max = -10.0;
-    for (entity, transform, sprite) in query.iter_mut() {
-        if (sprite, transform).contains_point(cursor_position.position) {
-            if transform.translation.z >= z_max {
-                if let Some(z_max_entity) = z_max_entity_opt {
-                    cmd.entity(z_max_entity).remove::<Hovering>();
-                }
-                cmd.entity(entity).insert(Hovering);
-                z_max = transform.translation.z;
-                z_max_entity_opt = Some(entity);
-            }
-        } else {
-            cmd.entity(entity).remove::<Hovering>();
-        }
+    if let Ok((entity, mut transform)) = query.get_mut(trigger.target()) {
+        cmd.entity(entity).insert((
+            Hovering,
+            BasePosition {
+                position: transform.translation,
+            },
+        ));
+        transform.translation.z = z_index_manager.next();
+        debug!(
+            "Hovering over entity at position: ({}, {})",
+            transform.translation.x, transform.translation.y
+        );
     }
 }
 
-pub fn cursor_select(
-    mut query: Query<(Entity, &Transform, &Sprite, Option<&MovableByCursor>), With<Selectable>>,
-    cursor_position: Res<CursorWorldPosition>,
-    mut click_position: ResMut<ClickWorldPosition>,
-    mouse_button_input: Res<ButtonInput<MouseButton>>,
+pub fn mock_cursor_over_on_hoverble_item(
+    trigger: Trigger<MockPointerover>,
+    mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
+    mut z_index_manager: ResMut<ZIndexManager>,
 ) {
-    if mouse_button_input.just_pressed(MouseButton::Left) {
-        let mut z_max_entity_opt: Option<Entity> = None;
-        let mut z_max = -10.0;
-
-        click_position.position = cursor_position.position;
-        debug!("mouse left press");
-
-        for (entity, transform, sprite, maybe_movable_by_cursor) in query.iter_mut() {
-            if (sprite, transform).contains_point(cursor_position.position) {
-                if transform.translation.z >= z_max {
-                    if let Some(z_max_entity) = z_max_entity_opt {
-                        cmd.entity(z_max_entity).remove::<Selected>();
-                        cmd.entity(z_max_entity).remove::<IsMoving>();
-                    }
-                    cmd.entity(entity).insert(Selected);
-                    if let Some(mut _movable_by_cursor) = maybe_movable_by_cursor {
-                        cmd.entity(entity).insert(IsMoving::new(*transform));
-                    }
-                    z_max = transform.translation.z;
-                    z_max_entity_opt = Some(entity);
-                }
-            }
-        }
-        if let Some(z_max_entity) = z_max_entity_opt {
-            if let Ok((_entity, transform, _sprite, _movable_by_cursor)) = query.get(z_max_entity) {
-                debug!(
-                    "Card at position ({}, {}) is now selected",
-                    transform.translation.x, transform.translation.y,
-                );
-            }
-        }
+    if let Ok((entity, mut transform)) = query.get_mut(trigger.target()) {
+        cmd.entity(entity).insert((
+            Hovering,
+            BasePosition {
+                position: transform.translation,
+            },
+        ));
+        transform.translation.z = z_index_manager.next();
+        debug!(
+            "Hovering over entity at position: ({}, {})",
+            transform.translation.x, transform.translation.y
+        );
     }
 }
 
-pub fn cursor_unselect(
-    mut query: Query<(Entity, Option<&MovableByCursor>), With<Selected>>,
-    mut click_position: ResMut<ClickWorldPosition>,
-    mouse_button_input: Res<ButtonInput<MouseButton>>,
+pub fn cursor_out_on_hoverable_item(
+    trigger: Trigger<Pointer<Out>>,
+    mut query: Query<(Entity, &mut Transform, &BasePosition), With<Hovering>>,
     mut cmd: Commands,
 ) {
-    if mouse_button_input.just_released(MouseButton::Left) {
-        click_position.position = Vec2::ZERO;
-        debug!("mouse left release");
-
-        for (entity, maybe_movable_by_cursor) in query.iter_mut() {
-            cmd.entity(entity).remove::<Selected>();
-            cmd.entity(entity).remove::<BasePosition>();
-            if let Some(mut _movable) = maybe_movable_by_cursor {
-                cmd.entity(entity).remove::<IsMoving>();
-            }
-        }
+    if let Ok((entity, mut transform, base_position)) = query.get_mut(trigger.target()) {
+        transform.translation.x = base_position.position.x;
+        transform.translation.y = base_position.position.y;
+        cmd.entity(entity).remove::<Hovering>();
+        cmd.entity(entity).remove::<BasePosition>();
+        debug!(
+            "Hover out entity, reset position to: ({}, {})",
+            base_position.position.x, base_position.position.y
+        );
     }
 }
 
-pub fn cursor_movement(
+pub fn mock_cursor_out_on_hoverable_item(
+    trigger: Trigger<MockPointerOut>,
+    mut query: Query<(Entity, &mut Transform, &BasePosition), With<Hovering>>,
+    mut cmd: Commands,
+) {
+    if let Ok((entity, mut transform, base_position)) = query.get_mut(trigger.target()) {
+        transform.translation.x = base_position.position.x;
+        transform.translation.y = base_position.position.y;
+        cmd.entity(entity).remove::<Hovering>();
+        cmd.entity(entity).remove::<BasePosition>();
+        debug!(
+            "Hover out entity, reset position to: ({}, {})",
+            base_position.position.x, base_position.position.y
+        );
+    }
+}
+
+pub fn cursor_click_on_selectable_item(
+    trigger: Trigger<Pointer<Click>>,
+    mut query: Query<Entity, With<Selectable>>,
+    mut cmd: Commands,
+) {
+    if let Ok(entity) = query.get_mut(trigger.target()) {
+        cmd.entity(entity).insert(Selected);
+        debug!("Entity selected: {:?}", entity);
+    }
+}
+
+pub fn cursor_drag_start_on_movable_by_cursor_item(
+    trigger: Trigger<Pointer<DragStart>>,
+    mut query: Query<(Entity, &Transform), With<MovableByCursor>>,
+    mut cmd: Commands,
+) {
+    if let Ok((entity, transform)) = query.get_mut(trigger.target()) {
+        cmd.trigger_targets(MockPointerOut, entity);
+        cmd.entity(entity).insert(IsMoving::new(transform.clone()));
+        debug!("Started dragging entity: {:?}", entity);
+    }
+}
+
+pub fn cursor_drag_end_on_movable_by_cursor_item(
+    trigger: Trigger<Pointer<DragEnd>>,
+    mut query: Query<Entity, With<IsMoving>>,
+    mut cmd: Commands,
+) {
+    if let Ok(entity) = query.get_mut(trigger.target()) {
+        cmd.entity(entity).remove::<IsMoving>();
+        cmd.trigger_targets(MockPointerover, entity);
+        debug!("Stopped dragging entity: {:?}", entity);
+    }
+}
+
+pub fn cursor_move_on_movable_by_cursor_item(
+    trigger: Trigger<Pointer<Move>>,
     mut query: Query<&mut IsMoving>,
-    cursor_position: Res<CursorWorldPosition>,
-    cursor_world_posision_last_frame: Res<CursorWorldPositionLastFrame>,
 ) {
-    for mut is_moving in query.iter_mut() {
-        is_moving.target_transform = Transform::from_translation(
-            (cursor_position.position - cursor_world_posision_last_frame.position).extend(0.0),
-        )
-        .mul_transform(is_moving.target_transform);
+    if let Ok(mut is_moving) = query.get_mut(trigger.target()) {
+        is_moving.target_transform =
+            Transform::from_translation(trigger.event.hit.position.unwrap());
     }
+    debug!("move event: {:?}", trigger.event);
 }
