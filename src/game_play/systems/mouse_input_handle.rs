@@ -125,6 +125,6 @@ pub fn cursor_move_on_movable_by_cursor_item(
     if let Ok(mut is_moving) = query.get_mut(trigger.target()) {
         is_moving.target_transform =
             Transform::from_translation(trigger.event.hit.position.unwrap());
+        trace!("move event: {:?}", trigger.event);
     }
-    debug!("move event: {:?}", trigger.event);
 }
