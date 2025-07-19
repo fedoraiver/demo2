@@ -10,6 +10,8 @@ rmp-serde = { version = "*", optional = true }
 image = { version = "*", optional = true }
 bevy_hanabi = {version = "*"}
 bevy_screen_diagnostics= {version ="*", optional = true}
+strum = {version="*"}
+strum_macros = {version="*"}
 
 [profile.dev]
 opt-level = 0

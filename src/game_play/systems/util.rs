@@ -4,25 +4,20 @@ use crate::resources::*;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy_aseprite_ultra::prelude::*;
+use strum::*;
 
-const SUITS: [&str; 4] = ["spades", "hearts", "clubs", "diamonds"];
-const VALUES: [&str; 13] = [
-    "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen",
-    "king",
-];
 const CARD_WIDTH: f32 = 64.0;
 const CARD_HEIGHT: f32 = 96.0;
 const CANVAS_WIDTH: f32 = 1024.0;
 const CANVAS_HEIGHT: f32 = 576.0;
+const X_SPACING: f32 = 8.0;
+const Y_SPACING: f32 = 12.0;
 
-pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
-    let cards_handle: Handle<Aseprite> = asset_server.load("cards.aseprite");
-    let board_handle: Handle<Aseprite> = asset_server.load("board.aseprite");
-    let icon_pack_handle: Handle<Aseprite> = asset_server.load("icon_pack.aseprite");
+pub fn setup_background(mut cmd: Commands, aseprite_handle: Res<AsepriteHandle>) {
     cmd.spawn((
         AseSlice {
             name: "board".into(),
-            aseprite: board_handle.clone(),
+            aseprite: aseprite_handle.background.clone(),
         },
         Sprite {
             custom_size: Some(Vec2::new(CANVAS_WIDTH, CANVAS_HEIGHT)),
@@ -30,39 +25,32 @@ pub fn setup_background(mut cmd: Commands, asset_server: Res<AssetServer>) {
         },
         Transform::from_xyz(0.0, 0.0, -1.0),
     ));
-    for i in 0..SUITS.len() {
-        for j in 0..VALUES.len() {
-            let slice_name = format!("{}_{}", SUITS[i], VALUES[j]);
-            let pos_x = j as f32 * 70.0 - 6.0 * 70.0;
-            let pos_y = i as f32 * 100.0 - 1.0 * 100.0;
-            cmd.spawn((
-                AseSlice {
-                    name: slice_name,
-                    aseprite: cards_handle.clone(),
-                },
-                Sprite {
-                    custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
-                    ..Default::default()
-                },
-                Transform::from_xyz(pos_x, pos_y, 0.0),
-                CardMarker,
-                Hoverable,
-                Selectable,
-                MovableByCursor,
-            ));
-        }
-    }
     cmd.spawn((
         AseSlice {
             name: "gamble_text".into(),
-            aseprite: icon_pack_handle.clone(),
+            aseprite: aseprite_handle.other.clone(),
         },
         Sprite {
             custom_size: Some(Vec2::new(640.0, 256.0)),
             ..Default::default()
         },
-        Transform::from_xyz(0.0, 0.0, 1.0),
+        Transform::from_xyz(0.0, 100.0, 2.0),
     ));
+    let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
+    let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
+    for (row, suit) in PokerSuit::iter().enumerate() {
+        for (col, point) in PokerPoint::iter().enumerate() {
+            let x = start_x + col as f32 * (CARD_WIDTH + X_SPACING);
+            let y = start_y - row as f32 * (CARD_HEIGHT + Y_SPACING);
+            spawn_poker_card(
+                &mut cmd,
+                aseprite_handle.cards.clone(),
+                suit,
+                point,
+                Transform::from_xyz(x, y, 0.0),
+            );
+        }
+    }
 }
 
 pub fn setup_camera(mut cmd: Commands) {
@@ -115,4 +103,30 @@ pub fn update_cursor_positon_last_frame(
     mut cursor_position_last_frame: ResMut<CursorWorldPositionLastFrame>,
 ) {
     cursor_position_last_frame.position = cursor_position.position;
+}
+
+pub fn spawn_poker_card(
+    cmd: &mut Commands,
+    aseprite_handle: Handle<Aseprite>,
+    suit: PokerSuit,
+    point: PokerPoint,
+    transform: Transform,
+) -> Entity {
+    let slice_name = format!("{}_{}", suit.to_string(), point.to_string());
+    cmd.spawn((
+        AseSlice {
+            name: slice_name.into(),
+            aseprite: aseprite_handle,
+        },
+        Sprite {
+            custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
+            ..Default::default()
+        },
+        transform,
+        CardMarker,
+        Hoverable,
+        Selectable,
+        MovableByCursor,
+    ))
+    .id()
 }

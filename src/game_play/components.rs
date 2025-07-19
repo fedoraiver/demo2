@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use strum_macros::*;
 
 #[derive(Component)]
 pub struct CardMarker;
@@ -72,5 +73,63 @@ impl ContainsPoint for (&Sprite, &Transform) {
             && local_point.x <= half_size.x
             && local_point.y >= -half_size.y
             && local_point.y <= half_size.y
+    }
+}
+
+#[derive(Debug, Clone, Copy, EnumIter)]
+pub enum PokerSuit {
+    Clubs,
+    Spades,
+    Diamonds,
+    Hearts,
+}
+
+#[derive(Debug, Clone, Copy, EnumIter)]
+pub enum PokerPoint {
+    Ace,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
+    King,
+}
+
+impl ToString for PokerSuit {
+    fn to_string(&self) -> String {
+        match self {
+            PokerSuit::Clubs => "clubs",
+            PokerSuit::Spades => "spades",
+            PokerSuit::Diamonds => "diamonds",
+            PokerSuit::Hearts => "hearts",
+        }
+        .to_string()
+    }
+}
+
+impl ToString for PokerPoint {
+    fn to_string(&self) -> String {
+        match self {
+            PokerPoint::Ace => "ace",
+            PokerPoint::Two => "two",
+            PokerPoint::Three => "three",
+            PokerPoint::Four => "four",
+            PokerPoint::Five => "five",
+            PokerPoint::Six => "six",
+            PokerPoint::Seven => "seven",
+            PokerPoint::Eight => "eight",
+            PokerPoint::Nine => "nine",
+            PokerPoint::Ten => "ten",
+            PokerPoint::Jack => "jack",
+            PokerPoint::Queen => "queen",
+            PokerPoint::King => "king",
+        }
+        .to_string()
     }
 }

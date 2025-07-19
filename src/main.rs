@@ -42,13 +42,15 @@ fn main() {
             }),
     );
 
+    app.init_resource::<CursorWorldPosition>();
+    app.init_resource::<CursorWorldPositionLastFrame>();
+    app.init_resource::<ClickWorldPosition>();
+    app.init_resource::<AsepriteHandle>();
     app.init_state::<AppState>();
+
     app.add_plugins(MainMenuPlugin);
-
     app.add_plugins(AsepriteUltraPlugin);
-
     app.add_plugins(HanabiPlugin);
-
     app.add_plugins(GamePlayPlugin);
 
     #[cfg(feature = "bevy_screen_diagnostics_plugin")]
@@ -61,12 +63,8 @@ fn main() {
         app.add_plugins(diagnostics::ScreenSystemInformationDiagnosticsPlugin);
     }
 
-    app.init_resource::<CursorWorldPosition>();
-    app.init_resource::<CursorWorldPositionLastFrame>();
-    app.init_resource::<ClickWorldPosition>();
-
     app.add_systems(Startup, register_particle_effect);
-
+    app.add_systems(Startup, register_aseprite_assets);
     app.add_systems(Update, toggle_pause_state);
 
     app.run();

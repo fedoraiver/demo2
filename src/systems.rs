@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
 
-use crate::states::AppState;
+use crate::{resources::*, states::AppState};
 
 pub fn toggle_pause_state(
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -78,4 +78,13 @@ pub fn register_particle_effect(mut effects: ResMut<Assets<EffectAsset>>) {
     //     ParticleEffect::new(effect_handle),
     //     Transform::from_xyz(0.0, 0.0, 3.0),
     // ));
+}
+
+pub fn register_aseprite_assets(
+    asset_server: Res<AssetServer>,
+    mut aseprite_handle: ResMut<AsepriteHandle>,
+) {
+    aseprite_handle.cards = asset_server.load("aseprites/cards.aseprite");
+    aseprite_handle.background = asset_server.load("aseprites/background.aseprite");
+    aseprite_handle.other = asset_server.load("aseprites/other.aseprite");
 }
