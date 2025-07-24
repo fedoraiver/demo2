@@ -57,6 +57,8 @@ pub fn setup_camera(mut cmd: Commands) {
     cmd.spawn((
         Camera2d,
         MainCamera,
+        // Transform::from_xyz(CANVAS_WIDTH / 2.0, -CANVAS_HEIGHT / 2.0, f32::MAX)
+        //     .with_scale(Vec3::new(1.0, -1.0, 1.0)),
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: bevy::render::camera::ScalingMode::AutoMin {
                 min_width: (CANVAS_WIDTH),
@@ -96,8 +98,25 @@ pub fn spawn_poker_card(
     .observe(cursor_out_on_hoverable_item)
     .observe(mock_cursor_out_on_hoverable_item)
     .observe(cursor_click_on_selectable_item)
+    .observe(mock_cursor_click_on_selectable_item)
     .observe(cursor_drag_start_on_movable_by_cursor_item)
-    .observe(cursor_move_on_movable_by_cursor_item)
+    .observe(cursor_drag_on_movable_by_cursor_item)
     .observe(cursor_drag_end_on_movable_by_cursor_item)
     .id()
+}
+
+pub fn window_to_world_position(
+    window_position: Vec2,
+    q_camera: &Query<(&Camera, &GlobalTransform), With<MainCamera>>,
+) -> Vec2 {
+    if let Ok((camera, camera_transform)) = q_camera.single() {
+        if let Ok(ray) = camera.viewport_to_world(camera_transform, window_position) {
+            let world_pos = ray.origin.truncate();
+            return Vec2::new(
+                world_pos.x + CANVAS_WIDTH / 2.0,
+                world_pos.y - CANVAS_HEIGHT / 2.0,
+            );
+        }
+    }
+    Vec2::ZERO
 }

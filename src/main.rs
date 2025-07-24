@@ -36,7 +36,7 @@ fn main() {
             })
             .set(ImagePlugin::default_nearest())
             .set(LogPlugin {
-                level: Level::DEBUG,
+                level: Level::INFO,
                 ..Default::default()
             }),
     );

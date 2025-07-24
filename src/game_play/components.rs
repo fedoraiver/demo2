@@ -37,9 +37,20 @@ impl IsMoving {
         }
     }
 }
+#[derive(Component, Debug, Clone, Copy)]
+pub struct MoveBasePosition {
+    pub position: Vec3,
+}
+impl MoveBasePosition {
+    pub fn new(translation: Vec3) -> Self {
+        Self {
+            position: translation,
+        }
+    }
+}
 
 #[derive(Component, Debug, Clone, Copy)]
-pub struct BasePosition {
+pub struct HoverBasePosition {
     pub position: Vec3,
 }
 
