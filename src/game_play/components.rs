@@ -135,19 +135,4 @@ impl Material2d for GambleTextMaterial {
     fn fragment_shader() -> ShaderRef {
         "shaders/gamble_text_shader.wgsl".into()
     }
-
-    fn specialize(
-        descriptor: &mut RenderPipelineDescriptor,
-        _layout: &MeshVertexBufferLayoutRef,
-        _key: Material2dKey<Self>,
-    ) -> Result<(), SpecializedMeshPipelineError> {
-        descriptor.depth_stencil = Some(DepthStencilState {
-            format: TextureFormat::Depth32Float,
-            depth_write_enabled: true,
-            depth_compare: CompareFunction::Less,
-            stencil: StencilState::default(),
-            bias: DepthBiasState::default(),
-        });
-        Ok(())
-    }
 }
