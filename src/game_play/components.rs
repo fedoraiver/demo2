@@ -1,4 +1,9 @@
 use bevy::prelude::*;
+use bevy::reflect::TypePath;
+use bevy::render::mesh::MeshVertexBufferLayoutRef;
+use bevy::render::render_resource::*;
+use bevy::render::render_resource::{AsBindGroup, ShaderRef};
+use bevy::sprite::{AlphaMode2d, Material2d, Material2dKey};
 use strum_macros::*;
 
 #[derive(Component)]
@@ -112,5 +117,37 @@ impl ToString for PokerPoint {
             PokerPoint::King => "king",
         }
         .to_string()
+    }
+}
+
+#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
+pub struct GambleTextMaterial {
+    #[texture(0)]
+    #[sampler(1)]
+    pub texture: Handle<Image>,
+}
+
+impl Material2d for GambleTextMaterial {
+    fn alpha_mode(&self) -> AlphaMode2d {
+        AlphaMode2d::Blend
+    }
+
+    fn fragment_shader() -> ShaderRef {
+        "shaders/gamble_text_shader.wgsl".into()
+    }
+
+    fn specialize(
+        descriptor: &mut RenderPipelineDescriptor,
+        _layout: &MeshVertexBufferLayoutRef,
+        _key: Material2dKey<Self>,
+    ) -> Result<(), SpecializedMeshPipelineError> {
+        descriptor.depth_stencil = Some(DepthStencilState {
+            format: TextureFormat::Depth32Float,
+            depth_write_enabled: true,
+            depth_compare: CompareFunction::Less,
+            stencil: StencilState::default(),
+            bias: DepthBiasState::default(),
+        });
+        Ok(())
     }
 }

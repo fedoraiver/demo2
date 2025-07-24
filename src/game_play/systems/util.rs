@@ -3,6 +3,9 @@ use crate::game_play::systems::mouse_input_handle::*;
 use crate::resources::*;
 
 use bevy::prelude::*;
+
+use bevy::render::view::RenderLayers;
+use bevy::sprite::Material2d;
 use bevy_aseprite_ultra::prelude::*;
 use strum::*;
 
@@ -13,7 +16,13 @@ const CANVAS_HEIGHT: f32 = 576.0;
 const X_SPACING: f32 = 8.0;
 const Y_SPACING: f32 = 12.0;
 
-pub fn setup_background(mut cmd: Commands, aseprite_handle: Res<AsepriteHandle>) {
+pub fn setup_background(
+    mut cmd: Commands,
+    aseprite_handle: Res<AsepriteHandle>,
+    asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<GambleTextMaterial>>,
+) {
     cmd.spawn((
         AseSlice {
             name: "board".into(),
@@ -25,17 +34,8 @@ pub fn setup_background(mut cmd: Commands, aseprite_handle: Res<AsepriteHandle>)
         },
         Transform::from_xyz(0.0, 0.0, -1.0),
     ));
-    cmd.spawn((
-        AseSlice {
-            name: "gamble_text".into(),
-            aseprite: aseprite_handle.other.clone(),
-        },
-        Sprite {
-            custom_size: Some(Vec2::new(640.0, 256.0)),
-            ..Default::default()
-        },
-        Transform::from_xyz(0.0, 100.0, 2.0),
-    ));
+    let mesh = Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0)));
+    let texture = asset_server.load("images/gamble_text.png");
     let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
     let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
     for (row, suit) in PokerSuit::iter().enumerate() {
@@ -47,18 +47,21 @@ pub fn setup_background(mut cmd: Commands, aseprite_handle: Res<AsepriteHandle>)
                 aseprite_handle.cards.clone(),
                 suit,
                 point,
-                Transform::from_xyz(x, y, 0.0),
+                Transform::from_xyz(x, y, 1.0),
             );
         }
     }
+    cmd.spawn((
+        Mesh2d(meshes.add(mesh)),
+        MeshMaterial2d(materials.add(GambleTextMaterial { texture })),
+        Transform::from_xyz(0.0, 100.0, 0.0),
+    ));
 }
 
 pub fn setup_camera(mut cmd: Commands) {
     cmd.spawn((
         Camera2d,
         MainCamera,
-        // Transform::from_xyz(CANVAS_WIDTH / 2.0, -CANVAS_HEIGHT / 2.0, f32::MAX)
-        //     .with_scale(Vec3::new(1.0, -1.0, 1.0)),
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: bevy::render::camera::ScalingMode::AutoMin {
                 min_width: (CANVAS_WIDTH),
