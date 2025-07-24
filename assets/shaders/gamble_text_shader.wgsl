@@ -17,16 +17,16 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     uv = center + offset * (1.0 + distortion * length(offset) * length(offset));
 
     // 扫描线动画
-    let scan_speed = 40.0;
-    let scan = 0.4 * sin(uv.y * 800.0 + globals.time * scan_speed);
+    let scan_speed = -40.0;
+    let scan = 0.2 * sin(uv.y * 100.0 - uv.x * 200.0 + globals.time * scan_speed);
 
     // 采样颜色（带 alpha）
     let rgba = textureSample(pattern_texture, pattern_sampler, uv);
 
     // RGB分离模拟
-    let r = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(0.005, 0.0)).r;
-    let g = rgba.g;
-    let b = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(-0.005, 0.0)).b;
+    let r = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(0.005, 0.005)).r;
+    let g = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(0.005, 0.005)).g;
+    let b = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(-0.005, -0.005)).b;
     let base_color = vec3<f32>(r, g, b);
 
     // 扫描线 + vignette

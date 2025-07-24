@@ -54,7 +54,7 @@ pub fn setup_background(
     cmd.spawn((
         Mesh2d(meshes.add(mesh)),
         MeshMaterial2d(materials.add(GambleTextMaterial { texture })),
-        Transform::from_xyz(0.0, 100.0, 0.0),
+        Transform::from_xyz(-200.0, 200.0, 0.0),
     ));
 }
 
