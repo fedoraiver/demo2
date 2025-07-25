@@ -10,30 +10,24 @@ var pattern_sampler: sampler;
 fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     var uv = in.uv;
 
-    // 曲面畸变
-    let center = vec2<f32>(0.5, 0.5);
+    let center = vec2<f32>(0.5, 0.0);
     let offset = uv - center;
-    let distortion = 5.0;
+    let distortion = 1.0;
     uv = center + offset * (1.0 + distortion * length(offset) * length(offset));
 
-    // 扫描线动画
-    let scan_speed = -10.0;
-    let scan = 0.4 * sin(uv.y * 800.0 + globals.time * scan_speed);
+    let scan_speed = -4.0;
+    let scan = 0.6 * sin((uv.y) * 160.0 + globals.time * scan_speed);
 
-    // 采样颜色（带 alpha）
     let rgba = textureSample(pattern_texture, pattern_sampler, uv);
 
-    // RGB分离模拟
-    let r = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(0.005, 0.005)).r;
-    let g = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(0.005, 0.005)).g;
-    let b = textureSample(pattern_texture, pattern_sampler, uv + vec2<f32>(-0.005, -0.005)).b;
-    let base_color = vec3<f32>(r, g, b);
+    let r = rgba.r * abs(sin(uv.x * 200.0 + globals.time * 0.3));
+    let g = rgba.g * abs(sin(uv.x * 20.0 + globals.time * 0.2));
+    let b = rgba.b * abs(sin(uv.x * -200.0 + globals.time * 0.3));
+    let base_color = vec3<f32>(mix(r, b, sin(globals.time * 1)), g, mix(b, r, cos(globals.time * 1)));
 
-    // 扫描线 + vignette
     let brightness = 1.0 - scan;
-    let vignette = smoothstep(0.8, 0.2, length(offset));
+    let vignette = smoothstep(1.3, 0.0, length(offset));
     let final_color = base_color * brightness * vignette;
 
-    // 保留透明度（防止黑边）
     return vec4<f32>(final_color, rgba.a);
 }
