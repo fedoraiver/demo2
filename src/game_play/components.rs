@@ -134,3 +134,20 @@ impl Material2d for GambleTextMaterial {
         "shaders/gamble_text_shader.wgsl".into()
     }
 }
+
+#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
+pub struct BackgroundMaterial {
+    #[texture(0)]
+    #[sampler(1)]
+    pub texture: Handle<Image>,
+}
+
+impl Material2d for BackgroundMaterial {
+    fn alpha_mode(&self) -> AlphaMode2d {
+        AlphaMode2d::Blend
+    }
+
+    fn fragment_shader() -> ShaderRef {
+        "shaders/background_shader.wgsl".into()
+    }
+}

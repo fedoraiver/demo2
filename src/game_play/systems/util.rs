@@ -21,21 +21,26 @@ pub fn setup_background(
     aseprite_handle: Res<AsepriteHandle>,
     asset_server: Res<AssetServer>,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<GambleTextMaterial>>,
+    mut materials1: ResMut<Assets<BackgroundMaterial>>,
+    mut materials2: ResMut<Assets<GambleTextMaterial>>,
 ) {
+    let mesh = Mesh::from(Rectangle::from_size(Vec2::new(
+        CANVAS_WIDTH * 2.0,
+        CANVAS_HEIGHT * 2.0,
+    )));
+    let texture = asset_server.load("images/background.png");
     cmd.spawn((
-        AseSlice {
-            name: "board".into(),
-            aseprite: aseprite_handle.background.clone(),
-        },
-        Sprite {
-            custom_size: Some(Vec2::new(CANVAS_WIDTH, CANVAS_HEIGHT)),
-            ..Default::default()
-        },
-        Transform::from_xyz(0.0, 0.0, -1.0),
+        Mesh2d(meshes.add(mesh)),
+        MeshMaterial2d(materials1.add(BackgroundMaterial { texture })),
+        Transform::from_xyz(-200.0, 160.0, 0.0),
     ));
     let mesh = Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0)));
     let texture = asset_server.load("images/gamble_text.png");
+    cmd.spawn((
+        Mesh2d(meshes.add(mesh)),
+        MeshMaterial2d(materials2.add(GambleTextMaterial { texture })),
+        Transform::from_xyz(-200.0, 200.0, 0.0),
+    ));
     let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
     let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
     for (row, suit) in PokerSuit::iter().enumerate() {
@@ -51,11 +56,6 @@ pub fn setup_background(
             );
         }
     }
-    cmd.spawn((
-        Mesh2d(meshes.add(mesh)),
-        MeshMaterial2d(materials.add(GambleTextMaterial { texture })),
-        Transform::from_xyz(-200.0, 200.0, 0.0),
-    ));
 }
 
 pub fn setup_camera(mut cmd: Commands) {
