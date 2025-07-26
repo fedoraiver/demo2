@@ -131,7 +131,7 @@ impl Material2d for GambleTextMaterial {
     }
 
     fn fragment_shader() -> ShaderRef {
-        "shaders/gamble_text_shader.wgsl".into()
+        "shaders/gamble_text.wgsl".into()
     }
 }
 
@@ -148,6 +148,6 @@ impl Material2d for BackgroundMaterial {
     }
 
     fn fragment_shader() -> ShaderRef {
-        "shaders/background_shader.wgsl".into()
+        "shaders/background.wgsl".into()
     }
 }
