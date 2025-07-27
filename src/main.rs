@@ -42,6 +42,7 @@ fn main() {
     app.add_plugins(EguiPlugin::default());
     app.add_plugins(WorldInspectorPlugin::new());
     output_render_graph(&mut app);
+    output_schedule_graph(&mut app, Update);
 
     #[cfg(feature = "bevy_screen_diagnostics_plugin")]
     {
@@ -62,7 +63,7 @@ fn main() {
     app.add_plugins(HanabiPlugin);
     app.add_plugins(GamePlayPlugin);
 
-    app.add_systems(Startup, register_particle_effects);
+    // app.add_systems(Startup, register_particle_effects);
     app.add_systems(Startup, register_aseprite_assets);
     app.add_systems(Startup, register_my_observers);
     app.add_systems(Update, toggle_pause_state);
