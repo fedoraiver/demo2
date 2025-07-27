@@ -13,7 +13,7 @@ mod diagnostics {
 
 use crate::game_play::*;
 use crate::main_menu::*;
-use bevy_inspector_egui::bevy_egui::EguiPlugin;
+use bevy_inspector_egui::bevy_egui::*;
 use resources::*;
 use states::*;
 use systems::*;
@@ -41,15 +41,7 @@ fn main() {
     );
     app.add_plugins(EguiPlugin::default());
     app.add_plugins(WorldInspectorPlugin::new());
-
-    app.init_resource::<AsepriteHandle>();
-    app.init_resource::<ZIndexManager>();
-    app.init_state::<AppState>();
-
-    app.add_plugins(MainMenuPlugin);
-    app.add_plugins(AsepriteUltraPlugin);
-    app.add_plugins(HanabiPlugin);
-    app.add_plugins(GamePlayPlugin);
+    output_render_graph(&mut app);
 
     #[cfg(feature = "bevy_screen_diagnostics_plugin")]
     {
@@ -60,6 +52,15 @@ fn main() {
         #[cfg(feature = "sysinfo_plugin")]
         app.add_plugins(diagnostics::ScreenSystemInformationDiagnosticsPlugin);
     }
+
+    app.init_resource::<AsepriteHandle>();
+    app.init_resource::<ZIndexManager>();
+    app.init_state::<AppState>();
+
+    app.add_plugins(MainMenuPlugin);
+    app.add_plugins(AsepriteUltraPlugin);
+    app.add_plugins(HanabiPlugin);
+    app.add_plugins(GamePlayPlugin);
 
     app.add_systems(Startup, register_particle_effects);
     app.add_systems(Startup, register_aseprite_assets);

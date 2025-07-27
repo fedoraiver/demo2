@@ -137,3 +137,16 @@ pub fn register_my_observers(mut cmd: Commands) {
         Name::new("cursor_drag_end_observer"),
     ));
 }
+
+pub fn output_render_graph(app: &mut App) {
+    use bevy_mod_debugdump::render_graph;
+    use bevy_mod_debugdump::*;
+    {
+        let dot = render_graph_dot(app, &render_graph::Settings::default());
+        if let Err(err) = std::fs::write("render_graph/render_graph.dot", dot) {
+            error!("Failed to write render graph: {}", err);
+        } else {
+            info!("Render graph written to render_graph.dot");
+        }
+    }
+}

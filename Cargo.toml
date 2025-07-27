@@ -8,6 +8,7 @@ bevy = {version = "*", features = ["file_watcher"]}
 bevy_aseprite_ultra = {version = "*"}
 bevy_hanabi = {version = "*"}
 bevy-inspector-egui = {version = "*"}
+bevy_mod_debugdump = {version = "*"}
 bevy_screen_diagnostics= {version ="*", optional = true}
 rmp-serde = {version = "*", optional = true}
 image = {version = "*", optional = true}
