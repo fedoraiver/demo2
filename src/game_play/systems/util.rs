@@ -110,14 +110,19 @@ pub fn spawn_poker_card(
 pub fn window_to_world_position(
     window_position: Vec2,
     q_camera: &Query<(&Camera, &GlobalTransform), With<MainCamera>>,
+    q_windows: &Query<&Window>,
 ) -> Vec2 {
-    if let Ok((camera, camera_transform)) = q_camera.single() {
-        if let Ok(ray) = camera.viewport_to_world(camera_transform, window_position) {
-            let world_pos = ray.origin.truncate();
-            return Vec2::new(
-                world_pos.x + CANVAS_WIDTH / 2.0,
-                world_pos.y - CANVAS_HEIGHT / 2.0,
-            );
+    if let Ok(window) = q_windows.single() {
+        let ndc = Vec3::new(
+            (window_position.x / window.width()) * 2.0,
+            (-window_position.y / window.height()) * 2.0,
+            0.0,
+        );
+
+        if let Ok((camera, camera_transform)) = q_camera.single() {
+            if let Some(world_pos) = camera.ndc_to_world(camera_transform, ndc) {
+                return world_pos.truncate();
+            }
         }
     }
     Vec2::ZERO

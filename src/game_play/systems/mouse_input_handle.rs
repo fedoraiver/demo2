@@ -154,13 +154,15 @@ pub fn cursor_drag_on_movable_by_cursor_item(
     trigger: Trigger<Pointer<Drag>>,
     mut query: Query<&mut IsMoving>,
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
+    q_window: Query<&Window>,
 ) {
     if let Ok(mut is_moving) = query.get_mut(trigger.target()) {
         is_moving.target_transform =
             is_moving
                 .target_transform
                 .mul_transform(Transform::from_translation(
-                    window_to_world_position(trigger.event().delta, &q_camera).extend(0.0),
+                    window_to_world_position(trigger.event().delta, &q_camera, &q_window)
+                        .extend(0.0),
                 ));
         debug!("move event: {:?}", trigger.event);
     }
