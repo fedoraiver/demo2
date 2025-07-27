@@ -1,3 +1,5 @@
+use crate::game_play::systems::mouse_input_handle::*;
+
 use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
 
@@ -17,7 +19,7 @@ pub fn toggle_pause_state(
     }
 }
 
-pub fn register_particle_effect(mut effects: ResMut<Assets<EffectAsset>>) {
+pub fn register_particle_effects(mut effects: ResMut<Assets<EffectAsset>>) {
     let mut gradient = Gradient::new();
     gradient.add_key(0.0, Vec4::new(1.0, 0.0, 0.0, 1.0));
     gradient.add_key(1.0, Vec4::new(0.0, 0.0, 1.0, 1.0));
@@ -87,4 +89,51 @@ pub fn register_aseprite_assets(
     aseprite_handle.cards = asset_server.load("aseprites/cards.aseprite");
     aseprite_handle.background = asset_server.load("aseprites/background.aseprite");
     aseprite_handle.other = asset_server.load("aseprites/other.aseprite");
+}
+
+pub fn register_my_observers(mut cmd: Commands) {
+    cmd.spawn((
+        Observer::new(cursor_over_on_hoverble_item),
+        Name::new("cursor_over_on_hoverble_item_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(mock_cursor_over_on_hoverble_item),
+        Name::new("mock_cursor_over_on_hoverble_item_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(cursor_out_on_hoverable_item),
+        Name::new("cursor_out_on_hoverable_item_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(mock_cursor_out_on_hoverable_item),
+        Name::new("mock_cursor_out_on_hoverable_item_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(cursor_click_on_selectable_item),
+        Name::new("cursor_click_on_selectable_item_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(mock_cursor_click_on_selectable_item),
+        Name::new("mock_cursor_click_on_selectable_item_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(cursor_drag_start_on_movable_by_cursor_item),
+        Name::new("cursor_drag_start_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(cursor_drag_on_movable_by_cursor_item),
+        Name::new("cursor_drag_observer"),
+    ));
+
+    cmd.spawn((
+        Observer::new(cursor_drag_end_on_movable_by_cursor_item),
+        Name::new("cursor_drag_end_observer"),
+    ));
 }

@@ -4,12 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = {version = "*",features=["file_watcher"]}
-bevy_aseprite_ultra = "*"
-rmp-serde = { version = "*", optional = true }
-image = { version = "*", optional = true }
+bevy = {version = "*", features = ["file_watcher"]}
+bevy_aseprite_ultra = {version = "*"}
 bevy_hanabi = {version = "*"}
+bevy-inspector-egui = {version = "*"}
 bevy_screen_diagnostics= {version ="*", optional = true}
+rmp-serde = {version = "*", optional = true}
+image = {version = "*", optional = true}
 strum = {version="*"}
 strum_macros = {version="*"}
 

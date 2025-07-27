@@ -13,16 +13,15 @@ mod diagnostics {
 
 use crate::game_play::*;
 use crate::main_menu::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use resources::*;
 use states::*;
 use systems::*;
 
-use bevy::{
-    log::{Level, LogPlugin},
-    prelude::*,
-};
+use bevy::{log::*, prelude::*};
 use bevy_aseprite_ultra::*;
 use bevy_hanabi::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 fn main() {
     let mut app = App::new();
@@ -40,6 +39,8 @@ fn main() {
                 ..Default::default()
             }),
     );
+    app.add_plugins(EguiPlugin::default());
+    app.add_plugins(WorldInspectorPlugin::new());
 
     app.init_resource::<AsepriteHandle>();
     app.init_resource::<ZIndexManager>();
@@ -60,8 +61,9 @@ fn main() {
         app.add_plugins(diagnostics::ScreenSystemInformationDiagnosticsPlugin);
     }
 
-    app.add_systems(Startup, register_particle_effect);
+    app.add_systems(Startup, register_particle_effects);
     app.add_systems(Startup, register_aseprite_assets);
+    app.add_systems(Startup, register_my_observers);
     app.add_systems(Update, toggle_pause_state);
 
     app.run();

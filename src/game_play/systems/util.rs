@@ -1,11 +1,8 @@
 use crate::game_play::components::*;
-use crate::game_play::systems::mouse_input_handle::*;
 use crate::resources::*;
 
 use bevy::prelude::*;
 
-use bevy::render::view::RenderLayers;
-use bevy::sprite::Material2d;
 use bevy_aseprite_ultra::prelude::*;
 use strum::*;
 
@@ -23,10 +20,12 @@ pub fn setup_background(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials1: ResMut<Assets<BackgroundMaterial>>,
     mut materials2: ResMut<Assets<GambleTextMaterial>>,
+    mut observer_query: Query<&mut Observer>,
 ) {
     let mesh = Mesh::from(Rectangle::from_size(Vec2::new(CANVAS_WIDTH, CANVAS_HEIGHT)));
     let texture = asset_server.load("images/background.png");
     cmd.spawn((
+        Name::new("Background"),
         Mesh2d(meshes.add(mesh)),
         MeshMaterial2d(materials1.add(BackgroundMaterial { texture })),
         Transform::from_xyz(0.0, 0.0, -1.0),
@@ -34,6 +33,7 @@ pub fn setup_background(
     let mesh = Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0)));
     let texture = asset_server.load("images/gamble_text.png");
     cmd.spawn((
+        Name::new("GambleText"),
         Mesh2d(meshes.add(mesh)),
         MeshMaterial2d(materials2.add(GambleTextMaterial { texture })),
         Transform::from_xyz(-200.0, 160.0, 0.0),
@@ -50,6 +50,7 @@ pub fn setup_background(
                 suit,
                 point,
                 Transform::from_xyz(x, y, 1.0),
+                &mut observer_query,
             );
         }
     }
@@ -57,6 +58,7 @@ pub fn setup_background(
 
 pub fn setup_camera(mut cmd: Commands) {
     cmd.spawn((
+        Name::new("MainCamera"),
         Camera2d,
         MainCamera,
         Projection::Orthographic(OrthographicProjection {
@@ -75,34 +77,34 @@ pub fn spawn_poker_card(
     suit: PokerSuit,
     point: PokerPoint,
     transform: Transform,
+    observer_query: &mut Query<&mut Observer>,
 ) -> Entity {
     let slice_name = format!("{}_{}", suit.to_string(), point.to_string());
-    cmd.spawn((
-        AseSlice {
-            name: slice_name.into(),
-            aseprite: aseprite_handle,
-        },
-        Sprite {
-            custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
-            ..Default::default()
-        },
-        transform,
-        Pickable::default(),
-        CardMarker,
-        Hoverable,
-        Selectable,
-        MovableByCursor,
-    ))
-    .observe(cursor_over_on_hoverble_item)
-    .observe(mock_cursor_over_on_hoverble_item)
-    .observe(cursor_out_on_hoverable_item)
-    .observe(mock_cursor_out_on_hoverable_item)
-    .observe(cursor_click_on_selectable_item)
-    .observe(mock_cursor_click_on_selectable_item)
-    .observe(cursor_drag_start_on_movable_by_cursor_item)
-    .observe(cursor_drag_on_movable_by_cursor_item)
-    .observe(cursor_drag_end_on_movable_by_cursor_item)
-    .id()
+    let entity = cmd
+        .spawn((
+            Name::new(format!("Card_{}_{}", suit.to_string(), point.to_string())),
+            AseSlice {
+                name: slice_name.into(),
+                aseprite: aseprite_handle,
+            },
+            Sprite {
+                custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
+                ..Default::default()
+            },
+            transform,
+            Pickable::default(),
+            CardMarker,
+            Hoverable,
+            Selectable,
+            MovableByCursor,
+        ))
+        .id();
+
+    for mut observer in observer_query.iter_mut() {
+        observer.watch_entity(entity);
+    }
+
+    entity
 }
 
 pub fn window_to_world_position(
