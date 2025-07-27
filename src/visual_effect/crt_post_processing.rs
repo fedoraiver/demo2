@@ -23,13 +23,16 @@ use bevy::{
     },
 };
 
-use crate::game_play::components::*;
+use crate::game_play::components::MainCamera;
 
 const SHADER_ASSET_PATH: &str = "shaders/crt_post_processing.wgsl";
 
 #[derive(Component, Default, Clone, Copy, ExtractComponent, ShaderType)]
 pub struct PostProcessSettings {
     pub intensity: f32,
+    pub band_mult: f32,
+    pub cell_mult: f32,
+    pub brightness: f32,
 }
 
 #[derive(Default)]
@@ -60,11 +63,7 @@ impl Plugin for PostProcessPlugin {
             .add_render_graph_node::<ViewNodeRunner<PostProcessNode>>(Core2d, PostProcessLabel)
             .add_render_graph_edges(
                 Core2d,
-                (
-                    Node2d::Tonemapping,
-                    PostProcessLabel,
-                    Node2d::EndMainPassPostProcessing,
-                ),
+                (Node2d::EndMainPass, PostProcessLabel, Node2d::Upscaling),
             );
     }
     fn finish(&self, app: &mut App) {
@@ -81,15 +80,12 @@ impl ViewNode for PostProcessNode {
         &'static ViewTarget,
         &'static PostProcessSettings,
         &'static DynamicUniformIndex<PostProcessSettings>,
-        &'static MainCamera,
     );
     fn run(
         &self,
         _graph: &mut RenderGraphContext,
         render_context: &mut RenderContext,
-        (view_target, _post_process_settings, settings_index, _main_camera): QueryItem<
-            Self::ViewQuery,
-        >,
+        (view_target, _post_process_settings, settings_index): QueryItem<Self::ViewQuery>,
         world: &World,
     ) -> Result<(), NodeRunError> {
         let post_process_pipeline = world.resource::<PostProcessPipeline>();

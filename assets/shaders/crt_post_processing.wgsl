@@ -2,20 +2,17 @@
 
 @group(0) @binding(0) var screen_texture: texture_2d<f32>;
 @group(0) @binding(1) var texture_sampler: sampler;
+@group(0) @binding(2) var<uniform> settings: PostProcessSettings;
+
 struct PostProcessSettings {
     intensity: f32,
-}
-@group(0) @binding(2) var<uniform> settings: PostProcessSettings;
+    band_mult: f32,
+    cell_mult: f32,
+    brightness: f32,
+};
 
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
-    let offset_strength = settings.intensity;
-
-    return vec4<f32>(
-        0.0,
-        textureSample(screen_texture, texture_sampler, in.uv).g,
-        textureSample(screen_texture, texture_sampler, in.uv).b,
-        1.0
-    );
+    let rgba = textureSample(screen_texture, texture_sampler, in.uv);
+    return vec4(0.0, rgba.g, rgba.b, 1.0);
 }
-
