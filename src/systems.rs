@@ -1,10 +1,9 @@
 use crate::game_play::systems::mouse_input_handle::*;
 
-use bevy::{ecs::schedule::ScheduleLabel, prelude::*};
+use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
 
 use crate::{resources::*, states::AppState};
-use bevy_mod_debugdump::*;
 
 pub fn toggle_pause_state(
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -139,7 +138,9 @@ pub fn register_my_observers(mut cmd: Commands) {
     ));
 }
 
+#[cfg(feature = "bevy_mod_debugdump_plugin")]
 pub fn output_render_graph(app: &mut App) {
+    use bevy_mod_debugdump::*;
     let dot = render_graph_dot(app, &render_graph::Settings::default());
     if let Err(err) = std::fs::write("graph/render_graph.dot", dot) {
         error!("Failed to write render graph: {}", err);
@@ -148,11 +149,18 @@ pub fn output_render_graph(app: &mut App) {
     }
 }
 
-pub fn output_schedule_graph(app: &mut App, schedule_label: impl ScheduleLabel) {
+#[cfg(feature = "bevy_mod_debugdump_plugin")]
+pub fn output_schedule_graph<L: bevy::ecs::schedule::ScheduleLabel>(
+    app: &mut App,
+    schedule_label: L,
+) {
+    use bevy_mod_debugdump::*;
     let dot = schedule_graph_dot(app, schedule_label, &schedule_graph::Settings::default());
-    if let Err(err) = std::fs::write("graph/schedule_graph.dot", dot) {
+    if let Err(err) = std::fs::create_dir_all("graph")
+        .and_then(|_| std::fs::write("graph/schedule_graph.dot", dot))
+    {
         error!("Failed to write schedule graph: {}", err);
     } else {
-        info!("Schedule graph written to schedule_graph.dot");
+        info!("Schedule graph written to graph/schedule_graph.dot");
     }
 }

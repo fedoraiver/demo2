@@ -41,8 +41,11 @@ fn main() {
     );
     app.add_plugins(EguiPlugin::default());
     app.add_plugins(WorldInspectorPlugin::new());
-    output_render_graph(&mut app);
-    output_schedule_graph(&mut app, Update);
+    #[cfg(feature = "bevy_mod_debugdump_plugin")]
+    {
+        output_render_graph(&mut app);
+        output_schedule_graph(&mut app, Update);
+    }
 
     #[cfg(feature = "bevy_screen_diagnostics_plugin")]
     {
