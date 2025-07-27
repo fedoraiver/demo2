@@ -11,6 +11,7 @@ use bevy::{
             ComponentUniforms, DynamicUniformIndex, ExtractComponent, ExtractComponentPlugin,
             UniformComponentPlugin,
         },
+        globals::{GlobalsBuffer, GlobalsUniform},
         render_graph::{
             NodeRunError, RenderGraphApp, RenderGraphContext, RenderLabel, ViewNode, ViewNodeRunner,
         },
@@ -22,8 +23,6 @@ use bevy::{
         view::ViewTarget,
     },
 };
-
-use crate::game_play::components::MainCamera;
 
 const SHADER_ASSET_PATH: &str = "shaders/crt_post_processing.wgsl";
 
@@ -102,6 +101,11 @@ impl ViewNode for PostProcessNode {
             return Ok(());
         };
 
+        let globals_uniforms = world.resource::<GlobalsBuffer>();
+        let Some(globals_binding) = globals_uniforms.buffer.binding() else {
+            return Ok(());
+        };
+
         let post_process = view_target.post_process_write();
 
         let bind_group = render_context.render_device().create_bind_group(
@@ -111,6 +115,7 @@ impl ViewNode for PostProcessNode {
                 post_process.source,
                 &post_process_pipeline.sampler,
                 settings_binding.clone(),
+                globals_binding.clone(),
             )),
         );
 
@@ -127,7 +132,7 @@ impl ViewNode for PostProcessNode {
         });
 
         render_pass.set_render_pipeline(pipeline);
-        render_pass.set_bind_group(0, &bind_group, &[settings_index.index()]);
+        render_pass.set_bind_group(0, &bind_group, &[0, settings_index.index()]);
         render_pass.draw(0..3, 0..1);
 
         Ok(())
@@ -148,6 +153,7 @@ impl FromWorld for PostProcessPipeline {
                     }),
                     sampler(bevy::render::render_resource::SamplerBindingType::Filtering),
                     uniform_buffer::<PostProcessSettings>(true),
+                    uniform_buffer::<GlobalsUniform>(true),
                 ),
             ),
         );

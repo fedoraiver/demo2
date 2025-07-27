@@ -38,6 +38,7 @@ pub fn setup_background(
         Mesh2d(meshes.add(mesh)),
         MeshMaterial2d(materials2.add(GambleTextMaterial { texture })),
         Transform::from_xyz(-200.0, 160.0, 0.0),
+        Visibility::Hidden,
     ));
     let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
     let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
@@ -70,8 +71,8 @@ pub fn setup_camera(mut cmd: Commands) {
             ..OrthographicProjection::default_2d()
         }),
         PostProcessSettings {
-            intensity: 1.0,
-            band_mult: 1.0,
+            intensity: 0.25,
+            band_mult: 0.5,
             cell_mult: 0.5,
             brightness: 1.0,
         },
