@@ -3,6 +3,7 @@ mod main_menu;
 mod resources;
 mod states;
 mod systems;
+mod visual_effect;
 #[cfg(feature = "bevy_screen_diagnostics_plugin")]
 mod diagnostics {
     pub use bevy_screen_diagnostics::*;
@@ -13,6 +14,7 @@ mod diagnostics {
 
 use crate::game_play::*;
 use crate::main_menu::*;
+use crate::visual_effect::crt_post_processing::PostProcessPlugin;
 use bevy_inspector_egui::bevy_egui::*;
 use resources::*;
 use states::*;
@@ -65,6 +67,7 @@ fn main() {
     app.add_plugins(AsepriteUltraPlugin);
     app.add_plugins(HanabiPlugin);
     app.add_plugins(GamePlayPlugin);
+    app.add_plugins(PostProcessPlugin);
 
     // app.add_systems(Startup, register_particle_effects);
     app.add_systems(Startup, register_aseprite_assets);

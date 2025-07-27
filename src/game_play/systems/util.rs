@@ -1,5 +1,6 @@
 use crate::game_play::components::*;
 use crate::resources::*;
+use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
 
@@ -68,6 +69,7 @@ pub fn setup_camera(mut cmd: Commands) {
             },
             ..OrthographicProjection::default_2d()
         }),
+        PostProcessSettings { intensity: 1.0 },
     ));
 }
 
