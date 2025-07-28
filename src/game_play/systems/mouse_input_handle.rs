@@ -17,7 +17,12 @@ pub fn cursor_over_on_hoverble_item(
     mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
     mut z_index_manager: ResMut<ZIndexManager>,
+    mouse_button: Res<ButtonInput<MouseButton>>,
 ) {
+    if mouse_button.pressed(MouseButton::Left) {
+        debug!("Mouse button is pressed, ignoring hover event.");
+        return;
+    }
     if let Ok((entity, mut transform)) = query.get_mut(trigger.target()) {
         cmd.entity(entity).insert((
             Hovering,
