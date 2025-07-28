@@ -25,7 +25,7 @@ pub fn cursor_over_on_hoverble_item(
                 position: transform.translation,
             },
         ));
-        transform.translation.z = z_index_manager.next();
+        transform.translation.z = z_index_manager.next(&mut cmd);
         debug!(
             "Hovering over entity at position: ({}, {})",
             transform.translation.x, transform.translation.y
@@ -46,7 +46,7 @@ pub fn mock_cursor_over_on_hoverble_item(
                 position: transform.translation,
             },
         ));
-        transform.translation.z = z_index_manager.next();
+        transform.translation.z = z_index_manager.next(&mut cmd);
         debug!(
             "Hovering over entity at position: ({}, {})",
             transform.translation.x, transform.translation.y
