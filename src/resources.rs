@@ -33,16 +33,15 @@ impl Command for ResetZIndexCommand {
         let mut last_original_z = f32::NAN;
 
         for (entity, original_z) in transforms {
-            if (original_z - last_original_z).abs() > f32::EPSILON {
-                last_original_z = original_z;
-            }
+            let is_different = (original_z - last_original_z).abs() > f32::EPSILON;
 
             if let Some(mut transform) = world.entity_mut(entity).get_mut::<Transform>() {
                 transform.translation.z = current_z;
             }
 
-            if (original_z - last_original_z).abs() > f32::EPSILON {
+            if is_different {
                 current_z += 1.0;
+                last_original_z = original_z;
             }
         }
 
