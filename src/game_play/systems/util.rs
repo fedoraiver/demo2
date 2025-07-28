@@ -105,6 +105,18 @@ pub fn spawn_poker_card(
             Hoverable,
             Selectable,
             MovableByCursor,
+            children![(
+                Sprite {
+                    color: Color::srgba(0.0, 0.0, 0.0, 0.5),
+                    custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
+                    ..default()
+                },
+                Transform {
+                    translation: Vec3::new(5.0, -5.0, -0.5),
+                    ..default()
+                },
+                Name::new("CardShadow"),
+            ),],
         ))
         .id();
 
