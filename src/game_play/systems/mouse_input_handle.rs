@@ -1,5 +1,5 @@
 use crate::{
-    game_play::{components::*, systems::util::*},
+    game_play::{components::*, event::*, systems::util::*},
     resources::*,
 };
 
@@ -98,13 +98,17 @@ pub fn cursor_click_on_selectable_item(
     query: Query<Entity, With<Selectable>>,
     selected_query: Query<&Selected>,
     mut cmd: Commands,
+    mut select_event_writer: EventWriter<SelectItem>,
+    mut unselect_event_writer: EventWriter<UnSelectItem>,
 ) {
     if let Ok(entity) = query.get(trigger.target()) {
         if selected_query.get(entity).is_ok() {
             cmd.entity(entity).remove::<Selected>();
+            unselect_event_writer.write(UnSelectItem::new(entity));
             info!("Entity deselected: {:?}", entity);
         } else {
             cmd.entity(entity).insert(Selected);
+            select_event_writer.write(SelectItem::new(entity));
             info!("Entity selected: {:?}", entity);
         }
     }
@@ -115,13 +119,17 @@ pub fn mock_cursor_click_on_selectable_item(
     query: Query<Entity, With<Selectable>>,
     selected_query: Query<&Selected>,
     mut cmd: Commands,
+    mut select_event_writer: EventWriter<SelectItem>,
+    mut unselect_event_writer: EventWriter<UnSelectItem>,
 ) {
     if let Ok(entity) = query.get(trigger.target()) {
         if selected_query.get(entity).is_ok() {
             cmd.entity(entity).remove::<Selected>();
+            unselect_event_writer.write(UnSelectItem::new(entity));
             info!("Entity deselected: {:?}", entity);
         } else {
             cmd.entity(entity).insert(Selected);
+            select_event_writer.write(SelectItem::new(entity));
             info!("Entity selected: {:?}", entity);
         }
     }
