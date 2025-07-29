@@ -13,6 +13,7 @@ const CANVAS_WIDTH: f32 = 1024.0;
 const CANVAS_HEIGHT: f32 = 576.0;
 const X_SPACING: f32 = 8.0;
 const Y_SPACING: f32 = 12.0;
+pub const Z_INDEX_MAX: f32 = 1000.0;
 
 pub fn setup_background(
     mut cmd: Commands,
@@ -29,7 +30,7 @@ pub fn setup_background(
         Name::new("Background"),
         Mesh2d(meshes.add(mesh)),
         MeshMaterial2d(materials1.add(BackgroundMaterial { texture })),
-        Transform::from_xyz(0.0, 0.0, -1.0),
+        Transform::from_xyz(0.0, 0.0, 0.0),
     ));
     let mesh = Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0)));
     let texture = asset_server.load("images/gamble_text.png");
@@ -37,7 +38,7 @@ pub fn setup_background(
         Name::new("GambleText"),
         Mesh2d(meshes.add(mesh)),
         MeshMaterial2d(materials2.add(GambleTextMaterial { texture })),
-        Transform::from_xyz(-200.0, 160.0, 0.0),
+        Transform::from_xyz(-200.0, 160.0, 0.25),
         Visibility::Hidden,
     ));
     let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
@@ -68,6 +69,7 @@ pub fn setup_camera(mut cmd: Commands) {
                 min_width: (CANVAS_WIDTH),
                 min_height: (CANVAS_HEIGHT),
             },
+            near: -Z_INDEX_MAX,
             ..OrthographicProjection::default_2d()
         }),
         PostProcessSettings {
@@ -105,6 +107,18 @@ pub fn spawn_poker_card(
             Hoverable,
             Selectable,
             MovableByCursor,
+            children![(
+                Sprite {
+                    color: Color::srgba(0.0, 0.0, 0.0, 0.5),
+                    custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
+                    ..default()
+                },
+                Transform {
+                    translation: Vec3::new(5.0, -5.0, -0.5),
+                    ..default()
+                },
+                Name::new("CardShadow"),
+            ),],
         ))
         .id();
 
