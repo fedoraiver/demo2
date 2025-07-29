@@ -137,7 +137,6 @@ pub fn cursor_drag_start_on_movable_by_cursor_item(
         cmd.entity(entity).insert(IsMoving::new(transform.clone()));
         cmd.entity(entity)
             .insert(MoveBasePosition::new(Vec3::from(transform.translation)));
-        cmd.trigger_targets(MockPointerClick, entity);
         debug!("Started dragging entity: {:?}", entity);
     }
 }
@@ -151,6 +150,7 @@ pub fn cursor_drag_end_on_movable_by_cursor_item(
         cmd.entity(entity).remove::<IsMoving>();
         // cmd.entity(entity).remove::<MoveBasePosition>();
         cmd.trigger_targets(MockPointerOver, entity);
+        cmd.trigger_targets(MockPointerClick, entity);
         debug!("Stopped dragging entity: {:?}", entity);
     }
 }
