@@ -170,13 +170,13 @@ pub fn cursor_drag_at_movable_by_cursor_item(
     q_window: Query<&Window>,
 ) {
     if let Ok(mut is_moving) = query.get_mut(trigger.target()) {
-        is_moving.target_transform =
-            is_moving
-                .target_transform
-                .mul_transform(Transform::from_translation(
-                    window_to_world_position(trigger.event().delta, &q_camera, &q_window)
-                        .extend(0.0),
-                ));
+        is_moving.target_transform = Transform::from_translation(
+            window_to_world_position(trigger.event().delta, &q_camera, &q_window).extend(0.0),
+        )
+        .mul_transform(Transform::from_translation(
+            is_moving.target_transform.translation,
+        ))
+        .mul_transform(Transform::from_scale(is_moving.target_transform.scale));
         debug!("move event: {:?}", trigger.event);
     }
 }
