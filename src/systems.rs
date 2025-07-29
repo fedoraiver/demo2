@@ -93,48 +93,48 @@ pub fn register_aseprite_assets(
 
 pub fn register_my_observers(mut cmd: Commands) {
     cmd.spawn((
-        Observer::new(cursor_over_on_hoverble_item),
-        Name::new("cursor_over_on_hoverble_item_observer"),
+        Observer::new(cursor_over_at_hoverble_item),
+        Name::new("cursor_over_at_hoverble_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(mock_cursor_over_on_hoverble_item),
-        Name::new("mock_cursor_over_on_hoverble_item_observer"),
+        Observer::new(mock_cursor_over_at_hoverble_item),
+        Name::new("mock_cursor_over_at_hoverble_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(cursor_out_on_hoverable_item),
-        Name::new("cursor_out_on_hoverable_item_observer"),
+        Observer::new(cursor_out_at_hoverable_item),
+        Name::new("cursor_out_at_hoverable_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(mock_cursor_out_on_hoverable_item),
-        Name::new("mock_cursor_out_on_hoverable_item_observer"),
+        Observer::new(mock_cursor_out_at_hoverable_item),
+        Name::new("mock_cursor_out_at_hoverable_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(cursor_click_on_selectable_item),
-        Name::new("cursor_click_on_selectable_item_observer"),
+        Observer::new(cursor_click_at_selectable_item),
+        Name::new("cursor_click_at_selectable_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(mock_cursor_click_on_selectable_item),
-        Name::new("mock_cursor_click_on_selectable_item_observer"),
+        Observer::new(mock_cursor_click_at_selectable_item),
+        Name::new("mock_cursor_click_at_selectable_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(cursor_drag_start_on_movable_by_cursor_item),
-        Name::new("cursor_drag_start_observer"),
+        Observer::new(cursor_drag_start_at_movable_by_cursor_item),
+        Name::new("cursor_drag_start_at_movable_by_cursor_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(cursor_drag_on_movable_by_cursor_item),
-        Name::new("cursor_drag_observer"),
+        Observer::new(cursor_drag_at_movable_by_cursor_item),
+        Name::new("cursor_drag_at_movable_by_cursor_item_observer"),
     ));
 
     cmd.spawn((
-        Observer::new(cursor_drag_end_on_movable_by_cursor_item),
-        Name::new("cursor_drag_end_observer"),
+        Observer::new(cursor_drag_end_at_movable_by_cursor_item),
+        Name::new("cursor_drag_end_at_movable_by_cursor_item_observer"),
     ));
 }
 

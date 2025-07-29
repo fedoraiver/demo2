@@ -12,7 +12,7 @@ pub struct MockPointerOver;
 #[derive(Event)]
 pub struct MockPointerClick;
 
-pub fn cursor_over_on_hoverble_item(
+pub fn cursor_over_at_hoverble_item(
     trigger: Trigger<Pointer<Over>>,
     mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
@@ -38,7 +38,7 @@ pub fn cursor_over_on_hoverble_item(
     }
 }
 
-pub fn mock_cursor_over_on_hoverble_item(
+pub fn mock_cursor_over_at_hoverble_item(
     trigger: Trigger<MockPointerOver>,
     mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
@@ -59,7 +59,7 @@ pub fn mock_cursor_over_on_hoverble_item(
     }
 }
 
-pub fn cursor_out_on_hoverable_item(
+pub fn cursor_out_at_hoverable_item(
     trigger: Trigger<Pointer<Out>>,
     mut query: Query<(Entity, &mut Transform, &HoverBasePosition), With<Hovering>>,
     mut cmd: Commands,
@@ -76,7 +76,7 @@ pub fn cursor_out_on_hoverable_item(
     }
 }
 
-pub fn mock_cursor_out_on_hoverable_item(
+pub fn mock_cursor_out_at_hoverable_item(
     trigger: Trigger<MockPointerOut>,
     mut query: Query<(Entity, &mut Transform, &HoverBasePosition), With<Hovering>>,
     mut cmd: Commands,
@@ -93,7 +93,7 @@ pub fn mock_cursor_out_on_hoverable_item(
     }
 }
 
-pub fn cursor_click_on_selectable_item(
+pub fn cursor_click_at_selectable_item(
     trigger: Trigger<Pointer<Click>>,
     query: Query<Entity, With<Selectable>>,
     selected_query: Query<&Selected>,
@@ -114,7 +114,7 @@ pub fn cursor_click_on_selectable_item(
     }
 }
 
-pub fn mock_cursor_click_on_selectable_item(
+pub fn mock_cursor_click_at_selectable_item(
     trigger: Trigger<MockPointerClick>,
     query: Query<Entity, With<Selectable>>,
     selected_query: Query<&Selected>,
@@ -135,7 +135,7 @@ pub fn mock_cursor_click_on_selectable_item(
     }
 }
 
-pub fn cursor_drag_start_on_movable_by_cursor_item(
+pub fn cursor_drag_start_at_movable_by_cursor_item(
     trigger: Trigger<Pointer<DragStart>>,
     mut query: Query<(Entity, &Transform), With<MovableByCursor>>,
     mut cmd: Commands,
@@ -149,7 +149,7 @@ pub fn cursor_drag_start_on_movable_by_cursor_item(
     }
 }
 
-pub fn cursor_drag_end_on_movable_by_cursor_item(
+pub fn cursor_drag_end_at_movable_by_cursor_item(
     trigger: Trigger<Pointer<DragEnd>>,
     mut query: Query<Entity, With<IsMoving>>,
     mut cmd: Commands,
@@ -163,7 +163,7 @@ pub fn cursor_drag_end_on_movable_by_cursor_item(
     }
 }
 
-pub fn cursor_drag_on_movable_by_cursor_item(
+pub fn cursor_drag_at_movable_by_cursor_item(
     trigger: Trigger<Pointer<Drag>>,
     mut query: Query<&mut IsMoving>,
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
