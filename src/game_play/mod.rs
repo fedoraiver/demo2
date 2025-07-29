@@ -9,6 +9,7 @@ use crate::game_play::systems::hovering::*;
 use crate::game_play::systems::movement::*;
 use crate::game_play::systems::selection::*;
 use crate::game_play::systems::util::*;
+use crate::resources::*;
 use crate::states::AppState;
 
 use bevy::prelude::*;
@@ -24,6 +25,7 @@ impl Plugin for GamePlayPlugin {
         app.add_systems(OnEnter(AppState::InGame), setup_background);
         app.add_event::<SelectItem>();
         app.add_event::<UnSelectItem>();
+        app.init_resource::<CursorPressedAtItem>();
 
         app.add_systems(
             Update,

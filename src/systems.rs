@@ -108,6 +108,11 @@ pub fn register_my_observers(mut cmd: Commands) {
     ));
 
     cmd.spawn((
+        Observer::new(cursor_pressed_at_item),
+        Name::new("cursor_pressed_at_item"),
+    ));
+
+    cmd.spawn((
         Observer::new(mock_cursor_out_at_hoverable_item),
         Name::new("mock_cursor_out_at_hoverable_item_observer"),
     ));

@@ -19,3 +19,8 @@ impl ZIndexManager {
         self.z_index
     }
 }
+
+#[derive(Resource, Default)]
+pub struct CursorPressedAtItem {
+    pub position: Vec2,
+}

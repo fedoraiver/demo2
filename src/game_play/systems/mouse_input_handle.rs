@@ -20,7 +20,6 @@ pub fn cursor_over_at_hoverble_item(
     mouse_button: Res<ButtonInput<MouseButton>>,
 ) {
     if mouse_button.pressed(MouseButton::Left) {
-        debug!("Mouse button is pressed, ignoring hover event.");
         return;
     }
     if let Ok((entity, mut transform)) = query.get_mut(trigger.target()) {
@@ -31,10 +30,6 @@ pub fn cursor_over_at_hoverble_item(
             },
         ));
         transform.translation.z = z_index_manager.next();
-        debug!(
-            "Hovering over entity at position: ({}, {})",
-            transform.translation.x, transform.translation.y
-        );
     }
 }
 
@@ -52,10 +47,6 @@ pub fn mock_cursor_over_at_hoverble_item(
             },
         ));
         transform.translation.z = z_index_manager.next();
-        debug!(
-            "Hovering over entity at position: ({}, {})",
-            transform.translation.x, transform.translation.y
-        );
     }
 }
 
@@ -69,10 +60,6 @@ pub fn cursor_out_at_hoverable_item(
         transform.translation.y = base_position.position.y;
         cmd.entity(entity).remove::<Hovering>();
         cmd.entity(entity).remove::<HoverBasePosition>();
-        debug!(
-            "Hover out entity, reset position to: ({}, {})",
-            base_position.position.x, base_position.position.y
-        );
     }
 }
 
@@ -86,11 +73,18 @@ pub fn mock_cursor_out_at_hoverable_item(
         transform.translation.y = base_position.position.y;
         cmd.entity(entity).remove::<Hovering>();
         cmd.entity(entity).remove::<HoverBasePosition>();
-        debug!(
-            "Hover out entity, reset position to: ({}, {})",
-            base_position.position.x, base_position.position.y
-        );
     }
+}
+
+pub fn cursor_pressed_at_item(
+    trigger: Trigger<Pointer<Pressed>>,
+    mut cursor_pressed_at_item: ResMut<CursorPressedAtItem>,
+) {
+    cursor_pressed_at_item.position = trigger.event().pointer_location.position;
+    debug!(
+        "Cursor pressed at position: {:?}",
+        cursor_pressed_at_item.position
+    );
 }
 
 pub fn cursor_click_at_selectable_item(
@@ -100,16 +94,23 @@ pub fn cursor_click_at_selectable_item(
     mut cmd: Commands,
     mut select_event_writer: EventWriter<SelectItem>,
     mut unselect_event_writer: EventWriter<UnSelectItem>,
+    cursor_pressed_at_item: Res<CursorPressedAtItem>,
 ) {
     if let Ok(entity) = query.get(trigger.target()) {
+        if trigger.event().pointer_location.position != cursor_pressed_at_item.position {
+            debug!("Click position does not match pressed position, ignoring click.");
+            return;
+        }
         if selected_query.get(entity).is_ok() {
             cmd.entity(entity).remove::<Selected>();
             unselect_event_writer.write(UnSelectItem::new(entity));
-            info!("Entity deselected: {:?}", entity);
+            debug!("Entity deselected: {:?}", entity);
+            debug!("{:?}", trigger);
         } else {
             cmd.entity(entity).insert(Selected);
             select_event_writer.write(SelectItem::new(entity));
-            info!("Entity selected: {:?}", entity);
+            debug!("Entity selected: {:?}", entity);
+            debug!("{:?}", trigger);
         }
     }
 }
@@ -126,11 +127,11 @@ pub fn mock_cursor_click_at_selectable_item(
         if selected_query.get(entity).is_ok() {
             cmd.entity(entity).remove::<Selected>();
             unselect_event_writer.write(UnSelectItem::new(entity));
-            info!("Entity deselected: {:?}", entity);
+            debug!("Entity deselected: {:?}", entity);
         } else {
             cmd.entity(entity).insert(Selected);
             select_event_writer.write(SelectItem::new(entity));
-            info!("Entity selected: {:?}", entity);
+            debug!("Entity selected: {:?}", entity);
         }
     }
 }
@@ -158,7 +159,7 @@ pub fn cursor_drag_end_at_movable_by_cursor_item(
         cmd.entity(entity).remove::<IsMoving>();
         // cmd.entity(entity).remove::<MoveBasePosition>();
         cmd.trigger_targets(MockPointerOver, entity);
-        cmd.trigger_targets(MockPointerClick, entity);
+        // cmd.trigger_targets(MockPointerClick, entity);
         debug!("Stopped dragging entity: {:?}", entity);
     }
 }
@@ -177,6 +178,6 @@ pub fn cursor_drag_at_movable_by_cursor_item(
             is_moving.target_transform.translation,
         ))
         .mul_transform(Transform::from_scale(is_moving.target_transform.scale));
-        debug!("move event: {:?}", trigger.event);
+        trace!("move event: {:?}", trigger.event);
     }
 }
