@@ -114,7 +114,7 @@ pub fn spawn_poker_card(
                     ..default()
                 },
                 Transform {
-                    translation: Vec3::new(5.0, -5.0, -0.5),
+                    translation: Vec3::new(3.0, -3.0, -0.5),
                     ..default()
                 },
                 Name::new("CardShadow"),
