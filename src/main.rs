@@ -24,6 +24,7 @@ use bevy::{log::*, prelude::*};
 use bevy_aseprite_ultra::*;
 use bevy_hanabi::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_trauma_shake::TraumaPlugin;
 
 fn main() {
     let mut app = App::new();
@@ -43,6 +44,7 @@ fn main() {
     );
     app.add_plugins(EguiPlugin::default());
     app.add_plugins(WorldInspectorPlugin::new());
+    app.add_plugins(TraumaPlugin);
     #[cfg(feature = "bevy_mod_debugdump_plugin")]
     {
         output_render_graph(&mut app);

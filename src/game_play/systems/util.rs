@@ -5,6 +5,7 @@ use crate::visual_effect::crt_post_processing::*;
 use bevy::prelude::*;
 
 use bevy_aseprite_ultra::prelude::*;
+use bevy_trauma_shake::*;
 use strum::*;
 
 const CARD_WIDTH: f32 = 64.0;
@@ -78,6 +79,7 @@ pub fn setup_camera(mut cmd: Commands) {
             gamma: 1.0,
             brightness: 0.03,
         },
+        Shake::default(),
     ));
 }
 
