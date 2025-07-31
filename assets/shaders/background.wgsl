@@ -88,6 +88,6 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
         pow(col.b, 0.75 + 0.15 * cos(globals.time * 0.4)),
         pow(col.r, 1.5) + pow(col.b + col.g, 1.5),
         pow(col.g, 0.75 + 0.15 * sin(globals.time * 0.6)),
-        0.45
+        0.25
     );
 }

@@ -73,10 +73,10 @@ pub fn setup_camera(mut cmd: Commands) {
             ..OrthographicProjection::default_2d()
         }),
         PostProcessSettings {
-            intensity: 0.25,
-            band_mult: 0.5,
-            cell_mult: 0.5,
-            brightness: 1.0,
+            saturation: 1.8,
+            contrast: 1.0,
+            gamma: 1.0,
+            brightness: 0.03,
         },
     ));
 }

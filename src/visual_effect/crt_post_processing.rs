@@ -30,9 +30,9 @@ const SHADER_ASSET_PATH: &str = "shaders/crt_post_processing.wgsl";
 
 #[derive(Component, Default, Clone, Copy, ExtractComponent, ShaderType)]
 pub struct PostProcessSettings {
-    pub intensity: f32,
-    pub band_mult: f32,
-    pub cell_mult: f32,
+    pub saturation: f32,
+    pub contrast: f32,
+    pub gamma: f32,
     pub brightness: f32,
 }
 
