@@ -18,7 +18,7 @@ struct PostProcessSettings {
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     let q = in.uv;
-    let uv = 0.5 + (q-0.5)*(0.99 + 0.01 * sin(0.2 * globals.time));
+    let uv = 0.5 + (q - vec2f(0.5)) * (0.99 + 0.01 * sin(0.2 * globals.time));
 
     let oricolor = textureSample(screen_texture, texture_sampler, vec2(q.x, q.y));
     var color = vec3f(0);
