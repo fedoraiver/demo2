@@ -3,8 +3,8 @@ use crate::resources::CardsMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
-
 use strum::*;
+
 const CARD_WIDTH: f32 = 64.0;
 const CARD_HEIGHT: f32 = 96.0;
 const CANVAS_WIDTH: f32 = 1024.0;
@@ -22,20 +22,23 @@ pub fn setup_background(
     mut materials2: ResMut<Assets<GambleTextMaterial>>,
     mut observer_query: Query<&mut Observer>,
 ) {
-    let mesh = Mesh::from(Rectangle::from_size(Vec2::new(CANVAS_WIDTH, CANVAS_HEIGHT)));
-    let texture = asset_server.load("images/background.png");
     cmd.spawn((
         Name::new("Background"),
-        Mesh2d(meshes.add(mesh)),
-        MeshMaterial2d(materials1.add(BackgroundMaterial { texture })),
+        Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(Vec2::new(
+            CANVAS_WIDTH,
+            CANVAS_HEIGHT,
+        ))))),
+        MeshMaterial2d(materials1.add(BackgroundMaterial {
+            texture: asset_server.load("images/background.png"),
+        })),
         Transform::from_xyz(0.0, 0.0, 0.0),
     ));
-    let mesh = Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0)));
-    let texture = asset_server.load("images/gamble_text.png");
     cmd.spawn((
         Name::new("GambleText"),
-        Mesh2d(meshes.add(mesh)),
-        MeshMaterial2d(materials2.add(GambleTextMaterial { texture })),
+        Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0))))),
+        MeshMaterial2d(materials2.add(GambleTextMaterial {
+            texture: asset_server.load("images/gamble_text.png"),
+        })),
         Transform::from_xyz(-200.0, 160.0, 0.25),
         Visibility::Hidden,
     ));
