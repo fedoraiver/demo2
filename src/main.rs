@@ -31,11 +31,6 @@ fn main() {
 
     app.add_plugins(
         DefaultPlugins
-            .set(AssetPlugin {
-                watch_for_changes_override: Some(true),
-                mode: AssetMode::Processed,
-                ..Default::default()
-            })
             .set(ImagePlugin::default_nearest())
             .set(LogPlugin {
                 level: Level::INFO,

@@ -18,8 +18,8 @@
   "frameTags": [
   ],
   "layers": [
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
-   { "name": "Layer 2", "opacity": 255, "blendMode": "normal" }
+   { "name": "card_background", "opacity": 255, "blendMode": "normal" },
+   { "name": "card_suit_and_point", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
    { "name": "diamonds_ten", "keys": [{ "frame": 0, "bounds": {"x": 576, "y": 0, "w": 64, "h": 96 } }] },
