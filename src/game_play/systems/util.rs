@@ -1,12 +1,10 @@
 use crate::game_play::components::*;
-use crate::resources::*;
+use crate::resources::CardsMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
 
-use bevy_aseprite_ultra::prelude::*;
 use strum::*;
-
 const CARD_WIDTH: f32 = 64.0;
 const CARD_HEIGHT: f32 = 96.0;
 const CANVAS_WIDTH: f32 = 1024.0;
@@ -17,8 +15,8 @@ pub const Z_INDEX_MAX: f32 = 1000.0;
 
 pub fn setup_background(
     mut cmd: Commands,
-    aseprite_handle: Res<AsepriteHandle>,
     asset_server: Res<AssetServer>,
+    cards_metadata: Res<CardsMetadata>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials1: ResMut<Assets<BackgroundMaterial>>,
     mut materials2: ResMut<Assets<GambleTextMaterial>>,
@@ -49,11 +47,12 @@ pub fn setup_background(
             let y = start_y - row as f32 * (CARD_HEIGHT + Y_SPACING);
             spawn_poker_card(
                 &mut cmd,
-                aseprite_handle.cards.clone(),
                 suit,
                 point,
                 Transform::from_xyz(x, y, 1.0),
                 &mut observer_query,
+                &asset_server,
+                &cards_metadata,
             );
         }
     }
@@ -83,22 +82,32 @@ pub fn setup_camera(mut cmd: Commands) {
 
 pub fn spawn_poker_card(
     cmd: &mut Commands,
-    aseprite_handle: Handle<Aseprite>,
     suit: PokerSuit,
     point: PokerPoint,
     transform: Transform,
     observer_query: &mut Query<&mut Observer>,
+    asset_server: &Res<AssetServer>,
+    cards_metadata: &Res<CardsMetadata>,
 ) -> Entity {
-    let slice_name = format!("{}_{}", suit.to_string(), point.to_string());
+    let card_name = format!("{}_{}", suit.to_string(), point.to_string());
     let entity = cmd
         .spawn((
             Name::new(format!("Card_{}_{}", suit.to_string(), point.to_string())),
-            AseSlice {
-                name: slice_name.into(),
-                aseprite: aseprite_handle,
-            },
             Sprite {
                 custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
+                image: asset_server.load("images/cards.png"),
+                rect: Some(Rect::from_corners(
+                    vec2(
+                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.x,
+                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.y,
+                    ),
+                    vec2(
+                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.x
+                            + cards_metadata.hashmap.get(&card_name).unwrap().bounds.w,
+                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.y
+                            + cards_metadata.hashmap.get(&card_name).unwrap().bounds.h,
+                    ),
+                )),
                 ..Default::default()
             },
             transform,

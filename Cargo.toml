@@ -5,16 +5,15 @@ edition = "2024"
 
 [dependencies]
 bevy = {version = "*", features = ["file_watcher"]}
-bevy_aseprite_ultra = {version = "*"}
 bevy_hanabi = {version = "*"}
 bevy-inspector-egui = {version = "*"}
 bevy_egui = {version = "*"}
 bevy_mod_debugdump = {version = "*", optional = true}
 bevy_screen_diagnostics= {version ="*", optional = true}
-rmp-serde = {version = "*", optional = true}
-image = {version = "*", optional = true}
 strum = {version="*"}
 strum_macros = {version="*"}
+serde = {version = "*", features = ["derive"] }
+serde_json = {version = "*"}
 
 [profile.dev]
 opt-level = 0
@@ -23,13 +22,6 @@ opt-level = 0
 opt-level = 3
 
 [features]
-asset_processing_plugin = [  
-    "bevy/serialize",
-    "bevy/qoi",
-    "dep:rmp-serde",
-    "dep:image",
-    "bevy/asset_processor"
-]
 bevy_screen_diagnostics_plugin=["dep:bevy_screen_diagnostics"]
 sysinfo_plugin=["bevy_screen_diagnostics/sysinfo_plugin"]
 bevy_mod_debugdump_plugin=["dep:bevy_mod_debugdump"]

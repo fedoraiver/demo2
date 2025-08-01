@@ -1,16 +1,11 @@
+use std::collections::HashMap;
+
+use crate::component::*;
 use crate::game_play::components::*;
 use crate::game_play::systems::util::*;
 
 use bevy::ecs::system::*;
 use bevy::prelude::*;
-use bevy_aseprite_ultra::prelude::*;
-
-#[derive(Resource, Default)]
-pub struct AsepriteHandle {
-    pub cards: Handle<Aseprite>,
-    pub background: Handle<Aseprite>,
-    pub other: Handle<Aseprite>,
-}
 
 struct ResetZIndexCommand {
     z_base: f32,
@@ -76,4 +71,9 @@ impl ZIndexManager {
 #[derive(Resource, Default)]
 pub struct CursorPressedAtItem {
     pub position: Vec2,
+}
+
+#[derive(Resource)]
+pub struct CardsMetadata {
+    pub hashmap: HashMap<String, AsepriteSliceKey>,
 }

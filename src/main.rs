@@ -1,8 +1,10 @@
+mod component;
 mod game_play;
 mod main_menu;
 mod resources;
 mod states;
 mod systems;
+mod util;
 mod visual_effect;
 #[cfg(feature = "bevy_screen_diagnostics_plugin")]
 mod diagnostics {
@@ -21,7 +23,6 @@ use states::*;
 use systems::*;
 
 use bevy::{log::*, prelude::*};
-use bevy_aseprite_ultra::*;
 use bevy_hanabi::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -59,19 +60,17 @@ fn main() {
         app.add_plugins(diagnostics::ScreenSystemInformationDiagnosticsPlugin);
     }
 
-    app.init_resource::<AsepriteHandle>();
     app.init_resource::<ZIndexManager>();
     app.init_state::<AppState>();
 
     app.add_plugins(MainMenuPlugin);
-    app.add_plugins(AsepriteUltraPlugin);
     app.add_plugins(HanabiPlugin);
     app.add_plugins(GamePlayPlugin);
     app.add_plugins(PostProcessPlugin);
 
     // app.add_systems(Startup, register_particle_effects);
-    app.add_systems(Startup, register_aseprite_assets);
     app.add_systems(Startup, register_my_observers);
+    app.add_systems(Startup, register_cards_metadata);
     app.add_systems(Update, toggle_pause_state);
 
     app.run();

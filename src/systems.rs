@@ -1,4 +1,4 @@
-use crate::game_play::systems::mouse_input_handle::*;
+use crate::{game_play::systems::mouse_input_handle::*, util::*};
 
 use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
@@ -82,15 +82,6 @@ pub fn register_particle_effects(mut effects: ResMut<Assets<EffectAsset>>) {
     // ));
 }
 
-pub fn register_aseprite_assets(
-    asset_server: Res<AssetServer>,
-    mut aseprite_handle: ResMut<AsepriteHandle>,
-) {
-    aseprite_handle.cards = asset_server.load("aseprites/cards.aseprite");
-    aseprite_handle.background = asset_server.load("aseprites/background.aseprite");
-    aseprite_handle.other = asset_server.load("aseprites/other.aseprite");
-}
-
 pub fn register_my_observers(mut cmd: Commands) {
     cmd.spawn((
         Observer::new(cursor_over_at_hoverble_item),
@@ -168,4 +159,12 @@ pub fn output_schedule_graph<L: bevy::ecs::schedule::ScheduleLabel>(
     } else {
         info!("Schedule graph written to graph/schedule_graph.dot");
     }
+}
+
+pub fn register_cards_metadata(mut cmd: Commands) {
+    let cards_meta_data =
+        load_card_aseprite_metadata_from_json("assets/metadata/aseprite_cards.json");
+    cmd.insert_resource(CardsMetadata {
+        hashmap: cards_meta_data,
+    });
 }
