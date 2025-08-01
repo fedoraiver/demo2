@@ -137,9 +137,8 @@ impl Material2d for GambleTextMaterial {
 
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct BackgroundMaterial {
-    #[texture(0)]
-    #[sampler(1)]
-    pub texture: Handle<Image>,
+    #[uniform(0)]
+    pub random: Vec3,
 }
 
 impl Material2d for BackgroundMaterial {

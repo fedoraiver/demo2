@@ -14,6 +14,7 @@ strum = {version="*"}
 strum_macros = {version="*"}
 serde = {version = "*", features = ["derive"] }
 serde_json = {version = "*"}
+rand = {version = "*"}
 
 [profile.dev]
 opt-level = 0

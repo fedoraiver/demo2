@@ -1,20 +1,16 @@
 #import bevy_sprite::mesh2d_vertex_output::VertexOutput
 #import bevy_sprite::mesh2d_view_bindings::globals
 
-@group(2) @binding(0)
-var pattern_texture: texture_2d<f32>;
-@group(2) @binding(1)
-var pattern_sampler: sampler;
-
+@group(2) @binding(0) var<uniform> random:vec3<f32>;
 
 const m: mat2x2<f32> = mat2x2<f32>(
-    0.7071, 0.7071,
-    -0.7071, 0.7071
+    0.6, 0.8,
+    -0.8, 0.6
 );
 
 fn hash(p: vec2f) -> f32 {
-    let h = dot(p, vec2f(415.411, 114.514));
-    return -1.0 + 2.0 * fract(sin(h) * 911.911911);
+    let h = dot(p, vec2f(random.x, random.y));
+    return -1.0 + 2.0 * fract(sin(h) * random.z);
 }
 
 fn noise(p: vec2f) -> f32 {

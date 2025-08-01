@@ -3,6 +3,7 @@ use crate::resources::CardsMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
+use rand::Rng;
 use strum::*;
 
 const CARD_WIDTH: f32 = 64.0;
@@ -22,15 +23,21 @@ pub fn setup_background(
     mut materials2: ResMut<Assets<GambleTextMaterial>>,
     mut observer_query: Query<&mut Observer>,
 ) {
+    let mut rng = rand::thread_rng();
+    let random = vec3(
+        rng.gen_range(1.0e2..1.0e4),
+        rng.gen_range(1.0e2..1.0e4),
+        rng.gen_range(1.0e2..1.0e4),
+    );
+    debug!("{}", random);
+
     cmd.spawn((
         Name::new("Background"),
         Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(Vec2::new(
             CANVAS_WIDTH,
             CANVAS_HEIGHT,
         ))))),
-        MeshMaterial2d(materials1.add(BackgroundMaterial {
-            texture: asset_server.load("images/background.png"),
-        })),
+        MeshMaterial2d(materials1.add(BackgroundMaterial { random: random })),
         Transform::from_xyz(0.0, 0.0, 0.0),
     ));
     cmd.spawn((
