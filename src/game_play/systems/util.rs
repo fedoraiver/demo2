@@ -3,8 +3,9 @@ use crate::resources::CardsMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
+use bevy::render::mesh::*;
 use bevy_trauma_shake::*;
-use rand::Rng;
+use rand::*;
 use strum::*;
 
 const CARD_WIDTH: f32 = 64.0;
@@ -22,6 +23,7 @@ pub fn setup_background(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials1: ResMut<Assets<BackgroundMaterial>>,
     mut materials2: ResMut<Assets<GambleTextMaterial>>,
+    mut materials3: ResMut<Assets<CardMaterial>>,
     mut observer_query: Query<&mut Observer>,
 ) {
     let mut rng = rand::thread_rng();
@@ -34,12 +36,13 @@ pub fn setup_background(
 
     cmd.spawn((
         Name::new("Background"),
-        Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(Vec2::new(
+        Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(vec2(
             CANVAS_WIDTH,
             CANVAS_HEIGHT,
         ))))),
         MeshMaterial2d(materials1.add(BackgroundMaterial { random: random })),
         Transform::from_xyz(0.0, 0.0, 0.0),
+        Pickable::IGNORE,
     ));
     cmd.spawn((
         Name::new("GambleText"),
@@ -49,6 +52,7 @@ pub fn setup_background(
         })),
         Transform::from_xyz(-200.0, 160.0, 0.25),
         Visibility::Hidden,
+        Pickable::IGNORE,
     ));
     let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
     let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
@@ -57,14 +61,17 @@ pub fn setup_background(
             let x = start_x + col as f32 * (CARD_WIDTH + X_SPACING);
             let y = start_y - row as f32 * (CARD_HEIGHT + Y_SPACING);
             spawn_poker_card(
-                &mut cmd,
                 suit,
                 point,
                 Transform::from_xyz(x, y, 1.0),
+                &mut cmd,
                 &mut observer_query,
                 &asset_server,
                 &cards_metadata,
+                &mut meshes,
+                &mut materials3,
             );
+            return;
         }
     }
 }
@@ -93,37 +100,34 @@ pub fn setup_camera(mut cmd: Commands) {
 }
 
 pub fn spawn_poker_card(
-    cmd: &mut Commands,
     suit: PokerSuit,
     point: PokerPoint,
     transform: Transform,
+    cmd: &mut Commands,
     observer_query: &mut Query<&mut Observer>,
     asset_server: &Res<AssetServer>,
     cards_metadata: &Res<CardsMetadata>,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    material: &mut ResMut<Assets<CardMaterial>>,
 ) -> Entity {
     let card_name = format!("{}_{}", suit.to_string(), point.to_string());
+    let mut card_mesh = Mesh::from(Rectangle::from_size(vec2(CARD_WIDTH, CARD_HEIGHT)));
+    info!("{:?}", card_mesh);
+    if let Some(VertexAttributeValues::Float32x3(positions)) =
+        card_mesh.attribute_mut(Mesh::ATTRIBUTE_POSITION)
+    {
+        for pos in positions.iter_mut() {
+            info!("{},{}", pos[0], pos[1]);
+        }
+    }
     let entity = cmd
         .spawn((
             Name::new(format!("Card_{}_{}", suit.to_string(), point.to_string())),
-            Sprite {
-                custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
-                image: asset_server.load("images/cards.png"),
-                rect: Some(Rect::from_corners(
-                    vec2(
-                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.x,
-                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.y,
-                    ),
-                    vec2(
-                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.x
-                            + cards_metadata.hashmap.get(&card_name).unwrap().bounds.w,
-                        cards_metadata.hashmap.get(&card_name).unwrap().bounds.y
-                            + cards_metadata.hashmap.get(&card_name).unwrap().bounds.h,
-                    ),
-                )),
-                ..Default::default()
-            },
+            Mesh2d(meshes.add(card_mesh)),
+            MeshMaterial2d(material.add(CardMaterial {
+                texture: asset_server.load("images/cards/clubs_ace.png"),
+            })),
             transform,
-            Pickable::default(),
             CardMarker,
             Hoverable,
             Selectable,

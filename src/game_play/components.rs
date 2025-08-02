@@ -119,23 +119,6 @@ impl ToString for PokerPoint {
 }
 
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-pub struct GambleTextMaterial {
-    #[texture(0)]
-    #[sampler(1)]
-    pub texture: Handle<Image>,
-}
-
-impl Material2d for GambleTextMaterial {
-    fn alpha_mode(&self) -> AlphaMode2d {
-        AlphaMode2d::Blend
-    }
-
-    fn fragment_shader() -> ShaderRef {
-        "shaders/gamble_text.wgsl".into()
-    }
-}
-
-#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct BackgroundMaterial {
     #[uniform(0)]
     pub random: Vec3,
@@ -148,5 +131,22 @@ impl Material2d for BackgroundMaterial {
 
     fn fragment_shader() -> ShaderRef {
         "shaders/background.wgsl".into()
+    }
+}
+
+#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
+pub struct CardMaterial {
+    #[texture(0)]
+    #[sampler(1)]
+    pub texture: Handle<Image>,
+}
+
+impl Material2d for CardMaterial {
+    fn alpha_mode(&self) -> AlphaMode2d {
+        AlphaMode2d::Blend
+    }
+
+    fn fragment_shader() -> ShaderRef {
+        "shaders/card.wgsl".into()
     }
 }
