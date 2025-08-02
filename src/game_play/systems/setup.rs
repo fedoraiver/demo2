@@ -6,14 +6,11 @@ use crate::visual_effect::crt_post_processing::*;
 use bevy::prelude::*;
 use bevy_trauma_shake::*;
 use rand::*;
-use strum::*;
 
-const CARD_WIDTH: f32 = 64.0;
-const CARD_HEIGHT: f32 = 96.0;
+pub const CARD_WIDTH: f32 = 96.0;
+pub const CARD_HEIGHT: f32 = 144.0;
 const CANVAS_WIDTH: f32 = 1024.0;
 const CANVAS_HEIGHT: f32 = 576.0;
-const X_SPACING: f32 = 8.0;
-const Y_SPACING: f32 = 12.0;
 pub const Z_INDEX_MAX: f32 = 1000.0;
 
 pub fn setup_background(
@@ -43,25 +40,39 @@ pub fn setup_background(
         Transform::from_xyz(0.0, 0.0, 0.0),
         Pickable::IGNORE,
     ));
-    let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
-    let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
-    for (row, suit) in PokerSuit::iter().enumerate() {
-        for (col, point) in PokerPoint::iter().enumerate() {
-            let x = start_x + col as f32 * (CARD_WIDTH + X_SPACING);
-            let y = start_y - row as f32 * (CARD_HEIGHT + Y_SPACING);
-            spawn_poker_card(
-                suit,
-                point,
-                Transform::from_xyz(x, y, 1.0),
-                &mut cmd,
-                &mut observer_query,
-                &asset_server,
-                &cards_metadata,
-                &mut meshes,
-                &mut materials2,
-            );
-        }
-    }
+    // use strum::*;
+    // const X_SPACING: f32 = 8.0;
+    // const Y_SPACING: f32 = 12.0;
+    // let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
+    // let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
+    // for (row, suit) in PokerSuit::iter().enumerate() {
+    //     for (col, point) in PokerPoint::iter().enumerate() {
+    //         let x = start_x + col as f32 * (CARD_WIDTH + X_SPACING);
+    //         let y = start_y - row as f32 * (CARD_HEIGHT + Y_SPACING);
+    //         spawn_poker_card(
+    //             suit,
+    //             point,
+    //             Transform::from_xyz(x, y, 1.0),
+    //             &mut cmd,
+    //             &mut observer_query,
+    //             &asset_server,
+    //             &cards_metadata,
+    //             &mut meshes,
+    //             &mut materials2,
+    //         );
+    //     }
+    // }
+    spawn_poker_card(
+        PokerSuit::Hearts,
+        PokerPoint::Four,
+        Transform::from_xyz(0.0, 0.0, 1.0),
+        &mut cmd,
+        &mut observer_query,
+        &asset_server,
+        &cards_metadata,
+        &mut meshes,
+        &mut materials2,
+    );
 }
 
 pub fn setup_camera(mut cmd: Commands) {

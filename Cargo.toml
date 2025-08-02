@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 bevy = {version = "*", features = ["file_watcher"]}
 bevy_hanabi = {version = "*"}
-bevy-inspector-egui = {version = "*"}
+bevy-inspector-egui = {version = "*",features = ["highlight_changes"]}
 bevy_egui = {version = "*"}
 bevy_mod_debugdump = {version = "*", optional = true}
 bevy_screen_diagnostics= {version ="*", optional = true}

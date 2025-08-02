@@ -1,6 +1,12 @@
 use bevy::prelude::*;
 
-use crate::{game_play::components::*, resources::*};
+use crate::{
+    game_play::{
+        components::*,
+        systems::setup::{CARD_HEIGHT, CARD_WIDTH},
+    },
+    resources::*,
+};
 
 pub fn spawn_poker_card(
     suit: PokerSuit,
@@ -28,8 +34,8 @@ pub fn spawn_poker_card(
         .spawn((
             Name::new(format!("Card_{}_{}", suit.to_string(), point.to_string())),
             Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(vec2(
-                card_aseprite_slice_rect.w,
-                card_aseprite_slice_rect.h,
+                CARD_WIDTH,
+                CARD_HEIGHT,
             ))))),
             MeshMaterial2d(material.add(MyTextureAtlasMaterial {
                 texture: asset_server.load("images/cards.png"),
@@ -45,10 +51,7 @@ pub fn spawn_poker_card(
             children![(
                 Sprite {
                     color: Color::srgba(0.0, 0.0, 0.0, 0.5),
-                    custom_size: Some(Vec2::new(
-                        card_aseprite_slice_rect.w,
-                        card_aseprite_slice_rect.h
-                    )),
+                    custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
                     ..default()
                 },
                 Transform {
