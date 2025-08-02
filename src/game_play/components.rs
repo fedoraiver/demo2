@@ -135,18 +135,24 @@ impl Material2d for BackgroundMaterial {
 }
 
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-pub struct CardMaterial {
+pub struct MyTextureAtlasMaterial {
     #[texture(0)]
     #[sampler(1)]
     pub texture: Handle<Image>,
+    #[uniform(2)]
+    pub offset: Vec2,
+    #[uniform(2)]
+    pub size: Vec2,
+    #[uniform(2)]
+    pub texture_size: Vec2,
 }
 
-impl Material2d for CardMaterial {
+impl Material2d for MyTextureAtlasMaterial {
     fn alpha_mode(&self) -> AlphaMode2d {
         AlphaMode2d::Blend
     }
 
     fn fragment_shader() -> ShaderRef {
-        "shaders/card.wgsl".into()
+        "shaders/my_texture_atlas.wgsl".into()
     }
 }

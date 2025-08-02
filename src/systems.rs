@@ -161,10 +161,8 @@ pub fn output_schedule_graph<L: bevy::ecs::schedule::ScheduleLabel>(
     }
 }
 
-pub fn register_cards_metadata(mut cmd: Commands) {
-    let cards_meta_data =
-        load_card_aseprite_metadata_from_json("assets/metadata/aseprite_cards.json");
+pub fn register_cards_aseprite_metadata(mut cmd: Commands) {
     cmd.insert_resource(CardsMetadata {
-        hashmap: cards_meta_data,
+        hashmap: load_card_aseprite_metadata_from_json("assets/metadata/aseprite_cards.json"),
     });
 }

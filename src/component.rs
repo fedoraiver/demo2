@@ -3,7 +3,6 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct AsepriteSliceKey {
-    pub frame: u32,
     pub bounds: AsepriteRect,
 }
 

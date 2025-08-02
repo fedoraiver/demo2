@@ -22,8 +22,7 @@ pub fn setup_background(
     cards_metadata: Res<CardsMetadata>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials1: ResMut<Assets<BackgroundMaterial>>,
-    mut materials2: ResMut<Assets<GambleTextMaterial>>,
-    mut materials3: ResMut<Assets<CardMaterial>>,
+    mut materials2: ResMut<Assets<MyTextureAtlasMaterial>>,
     mut observer_query: Query<&mut Observer>,
 ) {
     let mut rng = rand::thread_rng();
@@ -44,16 +43,6 @@ pub fn setup_background(
         Transform::from_xyz(0.0, 0.0, 0.0),
         Pickable::IGNORE,
     ));
-    cmd.spawn((
-        Name::new("GambleText"),
-        Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(Vec2::new(640.0, 256.0))))),
-        MeshMaterial2d(materials2.add(GambleTextMaterial {
-            texture: asset_server.load("images/gamble_text.png"),
-        })),
-        Transform::from_xyz(-200.0, 160.0, 0.25),
-        Visibility::Hidden,
-        Pickable::IGNORE,
-    ));
     let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
     let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
     for (row, suit) in PokerSuit::iter().enumerate() {
@@ -69,9 +58,8 @@ pub fn setup_background(
                 &asset_server,
                 &cards_metadata,
                 &mut meshes,
-                &mut materials3,
+                &mut materials2,
             );
-            return;
         }
     }
 }
@@ -108,24 +96,35 @@ pub fn spawn_poker_card(
     asset_server: &Res<AssetServer>,
     cards_metadata: &Res<CardsMetadata>,
     meshes: &mut ResMut<Assets<Mesh>>,
-    material: &mut ResMut<Assets<CardMaterial>>,
+    material: &mut ResMut<Assets<MyTextureAtlasMaterial>>,
 ) -> Entity {
     let card_name = format!("{}_{}", suit.to_string(), point.to_string());
     let mut card_mesh = Mesh::from(Rectangle::from_size(vec2(CARD_WIDTH, CARD_HEIGHT)));
-    info!("{:?}", card_mesh);
+    debug!("{:?}", card_mesh);
     if let Some(VertexAttributeValues::Float32x3(positions)) =
         card_mesh.attribute_mut(Mesh::ATTRIBUTE_POSITION)
     {
         for pos in positions.iter_mut() {
-            info!("{},{}", pos[0], pos[1]);
+            debug!("{},{},{}", pos[0], pos[1], pos[2]);
+            pos[0] += 12.0;
+            break;
         }
     }
     let entity = cmd
         .spawn((
             Name::new(format!("Card_{}_{}", suit.to_string(), point.to_string())),
             Mesh2d(meshes.add(card_mesh)),
-            MeshMaterial2d(material.add(CardMaterial {
-                texture: asset_server.load("images/cards/clubs_ace.png"),
+            MeshMaterial2d(material.add(MyTextureAtlasMaterial {
+                texture: asset_server.load("images/cards.png"),
+                offset: vec2(
+                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.x,
+                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.y,
+                ),
+                size: vec2(
+                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.w,
+                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.h,
+                ),
+                texture_size: vec2(880.0, 396.0),
             })),
             transform,
             CardMarker,
