@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::mesh::VertexAttributeValues};
+use bevy::prelude::*;
 
 use crate::{game_play::components::*, resources::*};
 
@@ -15,24 +15,22 @@ pub fn spawn_poker_card(
 ) -> Entity {
     let card_name = format!("{}_{}", suit.to_string(), point.to_string());
     let card_aseprite_slice_rect = cards_metadata.hashmap.get(&card_name).unwrap();
-    let mut card_mesh = Mesh::from(Rectangle::from_size(vec2(
-        card_aseprite_slice_rect.w,
-        card_aseprite_slice_rect.h,
-    )));
-    debug!("{:?}", card_mesh);
-    if let Some(VertexAttributeValues::Float32x3(positions)) =
-        card_mesh.attribute_mut(Mesh::ATTRIBUTE_POSITION)
-    {
-        for pos in positions.iter_mut() {
-            debug!("{},{},{}", pos[0], pos[1], pos[2]);
-            pos[0] += 12.0;
-            break;
-        }
-    }
+    // if let Some(VertexAttributeValues::Float32x3(positions)) =
+    //     card_mesh.attribute_mut(Mesh::ATTRIBUTE_POSITION)
+    // {
+    //     for pos in positions.iter_mut() {
+    //         debug!("{},{},{}", pos[0], pos[1], pos[2]);
+    //         pos[0] += 12.0;
+    //         break;
+    //     }
+    // }
     let entity = cmd
         .spawn((
             Name::new(format!("Card_{}_{}", suit.to_string(), point.to_string())),
-            Mesh2d(meshes.add(card_mesh)),
+            Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(vec2(
+                card_aseprite_slice_rect.w,
+                card_aseprite_slice_rect.h,
+            ))))),
             MeshMaterial2d(material.add(MyTextureAtlasMaterial {
                 texture: asset_server.load("images/cards.png"),
                 offset: vec2(card_aseprite_slice_rect.x, card_aseprite_slice_rect.y),

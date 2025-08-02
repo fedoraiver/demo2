@@ -83,55 +83,52 @@ pub fn register_particle_effects(mut effects: ResMut<Assets<EffectAsset>>) {
 }
 
 pub fn register_my_observers(mut cmd: Commands) {
-    cmd.spawn((
-        Observer::new(cursor_over_at_hoverble_item),
-        Name::new("cursor_over_at_hoverble_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(mock_cursor_over_at_hoverble_item),
-        Name::new("mock_cursor_over_at_hoverble_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(cursor_out_at_hoverable_item),
-        Name::new("cursor_out_at_hoverable_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(cursor_pressed_at_item),
-        Name::new("cursor_pressed_at_item"),
-    ));
-
-    cmd.spawn((
-        Observer::new(mock_cursor_out_at_hoverable_item),
-        Name::new("mock_cursor_out_at_hoverable_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(cursor_click_at_selectable_item),
-        Name::new("cursor_click_at_selectable_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(mock_cursor_click_at_selectable_item),
-        Name::new("mock_cursor_click_at_selectable_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(cursor_drag_start_at_movable_by_cursor_item),
-        Name::new("cursor_drag_start_at_movable_by_cursor_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(cursor_drag_at_movable_by_cursor_item),
-        Name::new("cursor_drag_at_movable_by_cursor_item_observer"),
-    ));
-
-    cmd.spawn((
-        Observer::new(cursor_drag_end_at_movable_by_cursor_item),
-        Name::new("cursor_drag_end_at_movable_by_cursor_item_observer"),
-    ));
+    cmd.spawn_batch([
+        (
+            Observer::new(cursor_over_at_hoverable_item),
+            Name::new("cursor_over_at_hoverable_item_observer"),
+        ),
+        (
+            Observer::new(mock_cursor_over_at_hoverable_item),
+            Name::new("mock_cursor_over_at_hoverable_item_observer"),
+        ),
+        (
+            Observer::new(cursor_move_at_hoverable_item),
+            Name::new("cursor_move_at_hoverable_item"),
+        ),
+        (
+            Observer::new(cursor_out_at_hoverable_item),
+            Name::new("cursor_out_at_hoverable_item_observer"),
+        ),
+        (
+            Observer::new(cursor_pressed_at_item),
+            Name::new("cursor_pressed_at_item"),
+        ),
+        (
+            Observer::new(mock_cursor_out_at_hoverable_item),
+            Name::new("mock_cursor_out_at_hoverable_item_observer"),
+        ),
+        (
+            Observer::new(cursor_click_at_selectable_item),
+            Name::new("cursor_click_at_selectable_item_observer"),
+        ),
+        (
+            Observer::new(mock_cursor_click_at_selectable_item),
+            Name::new("mock_cursor_click_at_selectable_item_observer"),
+        ),
+        (
+            Observer::new(cursor_drag_start_at_movable_by_cursor_item),
+            Name::new("cursor_drag_start_at_movable_by_cursor_item_observer"),
+        ),
+        (
+            Observer::new(cursor_drag_at_movable_by_cursor_item),
+            Name::new("cursor_drag_at_movable_by_cursor_item_observer"),
+        ),
+        (
+            Observer::new(cursor_drag_end_at_movable_by_cursor_item),
+            Name::new("cursor_drag_end_at_movable_by_cursor_item_observer"),
+        ),
+    ]);
 }
 
 #[cfg(feature = "bevy_mod_debugdump_plugin")]

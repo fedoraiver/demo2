@@ -12,7 +12,7 @@ pub struct MockPointerOver;
 #[derive(Event)]
 pub struct MockPointerClick;
 
-pub fn cursor_over_at_hoverble_item(
+pub fn cursor_over_at_hoverable_item(
     trigger: Trigger<Pointer<Over>>,
     mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
@@ -37,7 +37,7 @@ pub fn cursor_over_at_hoverble_item(
     }
 }
 
-pub fn mock_cursor_over_at_hoverble_item(
+pub fn mock_cursor_over_at_hoverable_item(
     trigger: Trigger<MockPointerOver>,
     mut query: Query<(Entity, &mut Transform), With<Hoverable>>,
     mut cmd: Commands,
@@ -55,6 +55,16 @@ pub fn mock_cursor_over_at_hoverble_item(
             "Hovering over entity at position: ({}, {})",
             transform.translation.x, transform.translation.y
         );
+    }
+}
+
+pub fn cursor_move_at_hoverable_item(
+    trigger: Trigger<Pointer<Move>>,
+    mut query: Query<Entity, With<Hoverable>>,
+    mut cmd: Commands,
+) {
+    if let Ok(entity) = query.get(trigger.target()) {
+        info!("{:?}", trigger);
     }
 }
 
