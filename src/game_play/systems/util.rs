@@ -3,6 +3,7 @@ use crate::resources::CardsMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
+use bevy_trauma_shake::*;
 use rand::Rng;
 use strum::*;
 
@@ -87,6 +88,7 @@ pub fn setup_camera(mut cmd: Commands) {
             gamma: 1.0,
             brightness: 0.03,
         },
+        Shake::default(),
     ));
 }
 

@@ -10,6 +10,7 @@ bevy-inspector-egui = {version = "*"}
 bevy_egui = {version = "*"}
 bevy_mod_debugdump = {version = "*", optional = true}
 bevy_screen_diagnostics= {version ="*", optional = true}
+bevy_trauma_shake = {version = "*"}
 strum = {version="*"}
 strum_macros = {version="*"}
 serde = {version = "*", features = ["derive"] }

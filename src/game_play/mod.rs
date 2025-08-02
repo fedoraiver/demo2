@@ -8,6 +8,7 @@ use crate::game_play::event::*;
 use crate::game_play::systems::hovering::*;
 use crate::game_play::systems::movement::*;
 use crate::game_play::systems::selection::*;
+use crate::game_play::systems::shaking::*;
 use crate::game_play::systems::util::*;
 use crate::resources::*;
 use crate::states::AppState;
@@ -29,7 +30,7 @@ impl Plugin for GamePlayPlugin {
 
         app.add_systems(
             Update,
-            (move_card, hover_card, select_card).run_if(in_state(AppState::InGame)),
+            (move_card, hover_card, select_card, camera_shake).run_if(in_state(AppState::InGame)),
         );
     }
 }
