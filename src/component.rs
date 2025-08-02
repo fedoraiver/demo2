@@ -3,11 +3,11 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct AsepriteSliceKey {
-    pub bounds: AsepriteRect,
+    pub bounds: AsepriteSliceRect,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct AsepriteRect {
+pub struct AsepriteSliceRect {
     pub x: f32,
     pub y: f32,
     pub w: f32,

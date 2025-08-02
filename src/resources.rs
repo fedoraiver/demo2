@@ -75,5 +75,5 @@ pub struct CursorPressedAtItem {
 
 #[derive(Resource)]
 pub struct CardsMetadata {
-    pub hashmap: HashMap<String, AsepriteSliceKey>,
+    pub hashmap: HashMap<String, AsepriteSliceRect>,
 }

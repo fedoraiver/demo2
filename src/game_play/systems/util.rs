@@ -117,12 +117,12 @@ pub fn spawn_poker_card(
             MeshMaterial2d(material.add(MyTextureAtlasMaterial {
                 texture: asset_server.load("images/cards.png"),
                 offset: vec2(
-                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.x,
-                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.y,
+                    cards_metadata.hashmap.get(&card_name).unwrap().x,
+                    cards_metadata.hashmap.get(&card_name).unwrap().y,
                 ),
                 size: vec2(
-                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.w,
-                    cards_metadata.hashmap.get(&card_name).unwrap().bounds.h,
+                    cards_metadata.hashmap.get(&card_name).unwrap().w,
+                    cards_metadata.hashmap.get(&card_name).unwrap().h,
                 ),
                 texture_size: vec2(880.0, 396.0),
             })),
