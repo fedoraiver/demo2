@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::component::*;
 use crate::game_play::components::*;
-use crate::game_play::systems::util::*;
+use crate::game_play::systems::setup::*;
 
 use bevy::ecs::system::*;
 use bevy::prelude::*;

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use bevy::math::vec2;
+use bevy::prelude::*;
 
 use crate::{component::*, resources::*};
 
