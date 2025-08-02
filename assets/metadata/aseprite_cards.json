@@ -18,7 +18,8 @@
   "frameTags": [
   ],
   "layers": [
-   { "name": "Flattened", "opacity": 255, "blendMode": "normal" }
+   { "name": "cards_background", "opacity": 255, "blendMode": "normal" },
+   { "name": "cards_face", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
    { "name": "diamonds_ace", "keys": [{ "frame": 0, "bounds": {"x": 2, "y": 2, "w": 64, "h": 96 } }] },
