@@ -41,7 +41,7 @@ fn fbm2(p: vec2f) -> vec2f {
 
 fn map(p_in: vec2f) -> vec3<f32> {
     var p = p_in * 0.5;
-    let t = globals.time * 0.7;
+    let t = globals.time * 0.2;
 
     let f = dot(
         fbm2(1.0 * (0.2 * t + p + fbm2(-0.2 * t + 2.0 * (p + fbm2(4.0 * p))))),
@@ -81,9 +81,7 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     col *= pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.2);
 
     return vec4<f32>(
-        pow(col.b, 0.75 + 0.15 * cos(globals.time * 0.4)),
-        pow(col.r, 1.5) + pow(col.b + col.g, 1.5),
-        pow(col.g, 0.75 + 0.15 * sin(globals.time * 0.6)),
+        col,
         0.25
     );
 }
