@@ -73,7 +73,22 @@ pub struct CursorPressedAtItem {
     pub position: Vec2,
 }
 
-#[derive(Resource)]
-pub struct CardsMetadata {
+pub struct AsePriteMetadata {
     pub hashmap: HashMap<String, AsepriteSliceRect>,
+    pub texture_size: Vec2,
+}
+
+#[derive(Resource)]
+pub struct CardsAsePriteMetadata {
+    pub hashmap: HashMap<String, AsepriteSliceRect>,
+    pub texture_size: Vec2,
+}
+
+impl From<AsePriteMetadata> for CardsAsePriteMetadata {
+    fn from(meta: AsePriteMetadata) -> Self {
+        Self {
+            hashmap: meta.hashmap,
+            texture_size: meta.texture_size,
+        }
+    }
 }

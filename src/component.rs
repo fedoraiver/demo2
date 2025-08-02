@@ -23,6 +23,13 @@ pub struct AsepriteSlice {
 #[derive(Debug, Deserialize)]
 pub struct AsepriteMeta {
     pub slices: Vec<AsepriteSlice>,
+    pub size: AsepriteSize,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct AsepriteSize {
+    pub w: f32,
+    pub h: f32,
 }
 
 #[derive(Debug, Deserialize)]

@@ -1,9 +1,9 @@
-use crate::{game_play::systems::mouse_input_handle::*, util::*};
+use crate::{game_play::systems::mouse_input_handle::*, resources::*, util::*};
 
 use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
 
-use crate::{resources::*, states::AppState};
+use crate::states::AppState;
 
 pub fn toggle_pause_state(
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -162,7 +162,7 @@ pub fn output_schedule_graph<L: bevy::ecs::schedule::ScheduleLabel>(
 }
 
 pub fn register_cards_aseprite_metadata(mut cmd: Commands) {
-    cmd.insert_resource(CardsMetadata {
-        hashmap: load_card_aseprite_metadata_from_json("assets/metadata/aseprite_cards.json"),
-    });
+    cmd.insert_resource(CardsAsePriteMetadata::from(
+        load_aseprite_metadata_from_json("assets/metadata/aseprite_cards.json"),
+    ));
 }

@@ -1,5 +1,5 @@
 use crate::game_play::components::*;
-use crate::resources::CardsMetadata;
+use crate::resources::CardsAsePriteMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
 use bevy::prelude::*;
@@ -19,7 +19,7 @@ pub const Z_INDEX_MAX: f32 = 1000.0;
 pub fn setup_background(
     mut cmd: Commands,
     asset_server: Res<AssetServer>,
-    cards_metadata: Res<CardsMetadata>,
+    cards_metadata: Res<CardsAsePriteMetadata>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials1: ResMut<Assets<BackgroundMaterial>>,
     mut materials2: ResMut<Assets<MyTextureAtlasMaterial>>,
@@ -94,7 +94,7 @@ pub fn spawn_poker_card(
     cmd: &mut Commands,
     observer_query: &mut Query<&mut Observer>,
     asset_server: &Res<AssetServer>,
-    cards_metadata: &Res<CardsMetadata>,
+    cards_metadata: &Res<CardsAsePriteMetadata>,
     meshes: &mut ResMut<Assets<Mesh>>,
     material: &mut ResMut<Assets<MyTextureAtlasMaterial>>,
 ) -> Entity {
@@ -124,7 +124,7 @@ pub fn spawn_poker_card(
                     cards_metadata.hashmap.get(&card_name).unwrap().w,
                     cards_metadata.hashmap.get(&card_name).unwrap().h,
                 ),
-                texture_size: vec2(880.0, 396.0),
+                texture_size: cards_metadata.texture_size,
             })),
             transform,
             CardMarker,
