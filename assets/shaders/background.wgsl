@@ -82,6 +82,6 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
 
     return vec4<f32>(
         col,
-        0.25
+        0.5
     );
 }
