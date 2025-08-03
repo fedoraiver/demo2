@@ -4,3 +4,4 @@ pub mod movement;
 pub mod selection;
 pub mod setup;
 pub mod shaking;
+pub mod tilting;

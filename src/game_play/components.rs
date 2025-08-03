@@ -17,17 +17,10 @@ pub struct IsHovering;
 #[derive(Component, Default, Reflect)]
 pub struct Tiltable;
 
-#[derive(Component, Reflect)]
+#[derive(Component, Default, Reflect)]
 #[require(Tiltable)]
 pub struct IsTilting {
-    pub normal: Vec3,
-}
-impl Default for IsTilting {
-    fn default() -> Self {
-        IsTilting {
-            normal: (vec3(0.0, 0.0, 1.0)),
-        }
-    }
+    pub delta: Vec2,
 }
 
 #[derive(Component, Default, Reflect)]

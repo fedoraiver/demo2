@@ -93,7 +93,15 @@ pub fn register_my_observers(mut cmd: Commands) {
             Name::new("mock_cursor_over_at_hoverable_item_observer"),
         ),
         (
-            Observer::new(cursor_move_at_hoverable_item),
+            Observer::new(cursor_over_at_tiltable_item),
+            Name::new("cursor_over_at_tiltable_item"),
+        ),
+        (
+            Observer::new(mock_cursor_over_at_tiltable_item),
+            Name::new("mock_cursor_over_at_tiltable_item"),
+        ),
+        (
+            Observer::new(cursor_move_at_tiltable_item),
             Name::new("cursor_move_at_hoverable_item"),
         ),
         (
@@ -101,12 +109,20 @@ pub fn register_my_observers(mut cmd: Commands) {
             Name::new("cursor_out_at_hoverable_item_observer"),
         ),
         (
-            Observer::new(cursor_pressed_at_item),
-            Name::new("cursor_pressed_at_item"),
-        ),
-        (
             Observer::new(mock_cursor_out_at_hoverable_item),
             Name::new("mock_cursor_out_at_hoverable_item_observer"),
+        ),
+        (
+            Observer::new(cursor_out_at_tiltable_item),
+            Name::new("cursor_out_at_tiltable_item"),
+        ),
+        (
+            Observer::new(mock_cursor_out_at_tiltable_item),
+            Name::new("mock_cursor_out_at_tiltable_item"),
+        ),
+        (
+            Observer::new(cursor_pressed_at_item),
+            Name::new("cursor_pressed_at_item"),
         ),
         (
             Observer::new(cursor_click_at_selectable_item),

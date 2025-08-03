@@ -58,14 +58,39 @@ pub fn mock_cursor_over_at_hoverable_item(
     }
 }
 
-pub fn cursor_move_at_hoverable_item(
-    trigger: Trigger<Pointer<Move>>,
-    mut query: Query<Entity, With<IsHovering>>,
+pub fn cursor_over_at_tiltable_item(
+    trigger: Trigger<Pointer<Over>>,
+    query: Query<Entity, With<Tiltable>>,
+    mut cmd: Commands,
+    mouse_button: Res<ButtonInput<MouseButton>>,
+) {
+    if mouse_button.pressed(MouseButton::Left) {
+        return;
+    }
+    if let Ok(entity) = query.get(trigger.target()) {
+        cmd.entity(entity).insert(IsTilting::default());
+    }
+}
+
+pub fn mock_cursor_over_at_tiltable_item(
+    trigger: Trigger<MockPointerOver>,
+    query: Query<Entity, With<Tiltable>>,
     mut cmd: Commands,
 ) {
     if let Ok(entity) = query.get(trigger.target()) {
-        info!("{:?}", trigger.event().event);
         cmd.entity(entity).insert(IsTilting::default());
+    }
+}
+
+pub fn cursor_move_at_tiltable_item(
+    trigger: Trigger<Pointer<Move>>,
+    mut query: Query<(&mut IsTilting, &Transform), (With<Tiltable>, Without<IsMoving>)>,
+) {
+    if let Ok((mut is_tilting, transform)) = query.get_mut(trigger.target()) {
+        info!("{:?}", trigger.event().event);
+        if let Some(cursor_position) = trigger.event().event.hit.position {
+            is_tilting.delta = cursor_position.xy() - transform.translation.xy();
+        }
     }
 }
 
@@ -92,6 +117,26 @@ pub fn mock_cursor_out_at_hoverable_item(
         transform.translation.y = base_position.position.y;
         cmd.entity(entity).remove::<IsHovering>();
         cmd.entity(entity).remove::<HoverBasePosition>();
+    }
+}
+
+pub fn cursor_out_at_tiltable_item(
+    trigger: Trigger<Pointer<Out>>,
+    query: Query<Entity, With<IsTilting>>,
+    mut cmd: Commands,
+) {
+    if let Ok(entity) = query.get(trigger.target()) {
+        cmd.entity(entity).remove::<IsTilting>();
+    }
+}
+
+pub fn mock_cursor_out_at_tiltable_item(
+    trigger: Trigger<MockPointerOut>,
+    query: Query<Entity, With<IsTilting>>,
+    mut cmd: Commands,
+) {
+    if let Ok(entity) = query.get(trigger.target()) {
+        cmd.entity(entity).remove::<IsTilting>();
     }
 }
 
@@ -169,20 +214,6 @@ pub fn cursor_drag_start_at_movable_by_cursor_item(
     }
 }
 
-pub fn cursor_drag_end_at_movable_by_cursor_item(
-    trigger: Trigger<Pointer<DragEnd>>,
-    mut query: Query<Entity, With<IsMoving>>,
-    mut cmd: Commands,
-) {
-    if let Ok(entity) = query.get_mut(trigger.target()) {
-        cmd.entity(entity).remove::<IsMoving>();
-        // cmd.entity(entity).remove::<MoveBasePosition>();
-        cmd.trigger_targets(MockPointerOver, entity);
-        // cmd.trigger_targets(MockPointerClick, entity);
-        debug!("Stopped dragging entity: {:?}", entity);
-    }
-}
-
 pub fn cursor_drag_at_movable_by_cursor_item(
     trigger: Trigger<Pointer<Drag>>,
     mut query: Query<&mut IsMoving>,
@@ -198,5 +229,19 @@ pub fn cursor_drag_at_movable_by_cursor_item(
         ))
         .mul_transform(Transform::from_scale(is_moving.target_transform.scale));
         trace!("move event: {:?}", trigger.event);
+    }
+}
+
+pub fn cursor_drag_end_at_movable_by_cursor_item(
+    trigger: Trigger<Pointer<DragEnd>>,
+    mut query: Query<Entity, With<IsMoving>>,
+    mut cmd: Commands,
+) {
+    if let Ok(entity) = query.get_mut(trigger.target()) {
+        cmd.entity(entity).remove::<IsMoving>();
+        // cmd.entity(entity).remove::<MoveBasePosition>();
+        cmd.trigger_targets(MockPointerOver, entity);
+        // cmd.trigger_targets(MockPointerClick, entity);
+        debug!("Stopped dragging entity: {:?}", entity);
     }
 }
