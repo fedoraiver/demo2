@@ -20,6 +20,7 @@ pub struct Tiltable;
 #[derive(Component, Default, Reflect)]
 #[require(Tiltable)]
 pub struct IsTilting {
+    pub cursor_from_item_position: Vec2,
     pub delta: Vec2,
 }
 

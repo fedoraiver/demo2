@@ -87,9 +87,10 @@ pub fn cursor_move_at_tiltable_item(
     mut query: Query<(&mut IsTilting, &Transform), (With<Tiltable>, Without<IsMoving>)>,
 ) {
     if let Ok((mut is_tilting, transform)) = query.get_mut(trigger.target()) {
-        info!("{:?}", trigger.event().event);
         if let Some(cursor_position) = trigger.event().event.hit.position {
-            is_tilting.delta = cursor_position.xy() - transform.translation.xy();
+            is_tilting.cursor_from_item_position =
+                cursor_position.xy() - transform.translation.xy();
+            is_tilting.delta = trigger.event().delta;
         }
     }
 }
