@@ -2,6 +2,8 @@ use crate::game_play::{components::*, util::*};
 
 use bevy::{prelude::*, render::mesh::*};
 
+const SCALE_FACTOR: f32 = 0.125;
+
 pub fn tilt_card(
     query: Query<(&Mesh2d, &IsTilting), (With<CardMarker>, Changed<IsTilting>)>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -21,8 +23,8 @@ pub fn tilt_card(
                     {
                         let delta =
                             window_to_world_position(is_tilting.delta, &q_camera, &q_window);
-                        pos[0] += delta.x / 8.0;
-                        pos[1] += delta.y / 8.0;
+                        pos[0] += delta.x * SCALE_FACTOR;
+                        pos[1] += delta.y * SCALE_FACTOR;
                     } else {
                         pos[0] = x;
                         pos[1] = y;
