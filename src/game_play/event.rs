@@ -21,3 +21,9 @@ impl UnSelectItem {
         Self { entity }
     }
 }
+
+#[derive(Event)]
+pub struct MoveItem {
+    pub entity: Entity,
+    pub delta_transform: Transform,
+}

@@ -40,16 +40,8 @@ pub struct MovableByCursor;
 
 #[derive(Component, Default, Reflect)]
 #[require(Movable)]
-pub struct IsMoving {
-    pub target_transform: Transform,
-}
-impl IsMoving {
-    pub fn new(transform: Transform) -> Self {
-        Self {
-            target_transform: transform,
-        }
-    }
-}
+pub struct IsMoving;
+
 #[derive(Component, Debug, Clone, Copy, Reflect)]
 pub struct MoveBasePosition {
     pub position: Vec3,
