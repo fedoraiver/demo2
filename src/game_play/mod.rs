@@ -20,6 +20,18 @@ pub struct GamePlayPlugin;
 
 impl Plugin for GamePlayPlugin {
     fn build(&self, app: &mut App) {
+        app.register_type::<CardMarker>();
+        app.register_type::<Hoverable>();
+        app.register_type::<IsHovering>();
+        app.register_type::<Tiltable>();
+        app.register_type::<IsTilting>();
+        app.register_type::<Selectable>();
+        app.register_type::<IsSelected>();
+        app.register_type::<Movable>();
+        app.register_type::<MovableByCursor>();
+        app.register_type::<IsMoving>();
+        app.register_type::<MoveBasePosition>();
+        app.register_type::<HoverBasePosition>();
         app.add_plugins(MeshPickingPlugin);
         app.add_plugins(Material2dPlugin::<BackgroundMaterial>::default());
         app.add_plugins(Material2dPlugin::<MyTextureAtlasMaterial>::default());

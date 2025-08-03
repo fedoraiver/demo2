@@ -24,7 +24,7 @@ pub fn cursor_over_at_hoverable_item(
     }
     if let Ok((entity, mut transform)) = query.get_mut(trigger.target()) {
         cmd.entity(entity).insert((
-            Hovering,
+            IsHovering,
             HoverBasePosition {
                 position: transform.translation,
             },
@@ -45,7 +45,7 @@ pub fn mock_cursor_over_at_hoverable_item(
 ) {
     if let Ok((entity, mut transform)) = query.get_mut(trigger.target()) {
         cmd.entity(entity).insert((
-            Hovering,
+            IsHovering,
             HoverBasePosition {
                 position: transform.translation,
             },
@@ -60,36 +60,37 @@ pub fn mock_cursor_over_at_hoverable_item(
 
 pub fn cursor_move_at_hoverable_item(
     trigger: Trigger<Pointer<Move>>,
-    mut query: Query<Entity, With<Hoverable>>,
+    mut query: Query<Entity, With<IsHovering>>,
     mut cmd: Commands,
 ) {
     if let Ok(entity) = query.get(trigger.target()) {
-        info!("{:?}", trigger);
+        info!("{:?}", trigger.event().event);
+        cmd.entity(entity).insert(IsTilting::default());
     }
 }
 
 pub fn cursor_out_at_hoverable_item(
     trigger: Trigger<Pointer<Out>>,
-    mut query: Query<(Entity, &mut Transform, &HoverBasePosition), With<Hovering>>,
+    mut query: Query<(Entity, &mut Transform, &HoverBasePosition), With<IsHovering>>,
     mut cmd: Commands,
 ) {
     if let Ok((entity, mut transform, base_position)) = query.get_mut(trigger.target()) {
         transform.translation.x = base_position.position.x;
         transform.translation.y = base_position.position.y;
-        cmd.entity(entity).remove::<Hovering>();
+        cmd.entity(entity).remove::<IsHovering>();
         cmd.entity(entity).remove::<HoverBasePosition>();
     }
 }
 
 pub fn mock_cursor_out_at_hoverable_item(
     trigger: Trigger<MockPointerOut>,
-    mut query: Query<(Entity, &mut Transform, &HoverBasePosition), With<Hovering>>,
+    mut query: Query<(Entity, &mut Transform, &HoverBasePosition), With<IsHovering>>,
     mut cmd: Commands,
 ) {
     if let Ok((entity, mut transform, base_position)) = query.get_mut(trigger.target()) {
         transform.translation.x = base_position.position.x;
         transform.translation.y = base_position.position.y;
-        cmd.entity(entity).remove::<Hovering>();
+        cmd.entity(entity).remove::<IsHovering>();
         cmd.entity(entity).remove::<HoverBasePosition>();
     }
 }
@@ -108,7 +109,7 @@ pub fn cursor_pressed_at_item(
 pub fn cursor_click_at_selectable_item(
     trigger: Trigger<Pointer<Click>>,
     query: Query<Entity, With<Selectable>>,
-    selected_query: Query<&Selected>,
+    selected_query: Query<&IsSelected>,
     mut cmd: Commands,
     mut select_event_writer: EventWriter<SelectItem>,
     mut unselect_event_writer: EventWriter<UnSelectItem>,
@@ -120,12 +121,12 @@ pub fn cursor_click_at_selectable_item(
             return;
         }
         if selected_query.get(entity).is_ok() {
-            cmd.entity(entity).remove::<Selected>();
+            cmd.entity(entity).remove::<IsSelected>();
             unselect_event_writer.write(UnSelectItem::new(entity));
             debug!("Entity deselected: {:?}", entity);
             debug!("{:?}", trigger);
         } else {
-            cmd.entity(entity).insert(Selected);
+            cmd.entity(entity).insert(IsSelected);
             select_event_writer.write(SelectItem::new(entity));
             debug!("Entity selected: {:?}", entity);
             debug!("{:?}", trigger);
@@ -136,18 +137,18 @@ pub fn cursor_click_at_selectable_item(
 pub fn mock_cursor_click_at_selectable_item(
     trigger: Trigger<MockPointerClick>,
     query: Query<Entity, With<Selectable>>,
-    selected_query: Query<&Selected>,
+    selected_query: Query<&IsSelected>,
     mut cmd: Commands,
     mut select_event_writer: EventWriter<SelectItem>,
     mut unselect_event_writer: EventWriter<UnSelectItem>,
 ) {
     if let Ok(entity) = query.get(trigger.target()) {
         if selected_query.get(entity).is_ok() {
-            cmd.entity(entity).remove::<Selected>();
+            cmd.entity(entity).remove::<IsSelected>();
             unselect_event_writer.write(UnSelectItem::new(entity));
             debug!("Entity deselected: {:?}", entity);
         } else {
-            cmd.entity(entity).insert(Selected);
+            cmd.entity(entity).insert(IsSelected);
             select_event_writer.write(SelectItem::new(entity));
             debug!("Entity selected: {:?}", entity);
         }

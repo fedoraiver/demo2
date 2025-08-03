@@ -4,31 +4,47 @@ use bevy::render::render_resource::*;
 use bevy::sprite::*;
 use strum_macros::*;
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 pub struct CardMarker;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
 pub struct Hoverable;
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 #[require(Hoverable)]
-pub struct Hovering;
+pub struct IsHovering;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
+pub struct Tiltable;
+
+#[derive(Component, Reflect)]
+#[require(Tiltable)]
+pub struct IsTilting {
+    pub normal: Vec3,
+}
+impl Default for IsTilting {
+    fn default() -> Self {
+        IsTilting {
+            normal: (vec3(0.0, 0.0, 1.0)),
+        }
+    }
+}
+
+#[derive(Component, Default, Reflect)]
 pub struct Selectable;
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 #[require(Selectable)]
-pub struct Selected;
+pub struct IsSelected;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
 pub struct Movable;
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 #[require(Movable)]
 pub struct MovableByCursor;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
 #[require(Movable)]
 pub struct IsMoving {
     pub target_transform: Transform,
@@ -40,7 +56,7 @@ impl IsMoving {
         }
     }
 }
-#[derive(Component, Debug, Clone, Copy)]
+#[derive(Component, Debug, Clone, Copy, Reflect)]
 pub struct MoveBasePosition {
     pub position: Vec3,
 }
@@ -52,7 +68,7 @@ impl MoveBasePosition {
     }
 }
 
-#[derive(Component, Debug, Clone, Copy)]
+#[derive(Component, Debug, Clone, Copy, Reflect)]
 pub struct HoverBasePosition {
     pub position: Vec3,
 }

@@ -13,7 +13,7 @@ pub fn hover_card_offset(time: f32) -> (f32, f32) {
 
 pub fn hover_card(
     time: Res<Time>,
-    mut query: Query<(&mut Transform, &HoverBasePosition), (With<CardMarker>, With<Hovering>)>,
+    mut query: Query<(&mut Transform, &HoverBasePosition), (With<CardMarker>, With<IsHovering>)>,
 ) {
     let (offset_x, offset_y) = hover_card_offset(time.elapsed_secs());
     for (mut transform, base_position) in query.iter_mut() {
