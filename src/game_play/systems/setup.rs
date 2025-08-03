@@ -7,8 +7,8 @@ use bevy::prelude::*;
 use bevy_trauma_shake::*;
 use rand::*;
 
-pub const CARD_WIDTH: f32 = 96.0;
-pub const CARD_HEIGHT: f32 = 144.0;
+pub const CARD_WIDTH: f32 = 64.0;
+pub const CARD_HEIGHT: f32 = 96.0;
 const CANVAS_WIDTH: f32 = 1024.0;
 const CANVAS_HEIGHT: f32 = 576.0;
 pub const Z_INDEX_MAX: f32 = 1000.0;

@@ -1,4 +1,8 @@
-use crate::game_play::{components::*, util::*};
+use crate::game_play::{
+    components::*,
+    systems::setup::{CARD_HEIGHT, CARD_WIDTH},
+    util::*,
+};
 
 use bevy::{prelude::*, render::mesh::*};
 
@@ -16,8 +20,16 @@ pub fn tilt_card(
                 card_mesh.attribute_mut(Mesh::ATTRIBUTE_POSITION)
             {
                 for pos in positions.iter_mut() {
-                    let x = if pos[0] > 0.0 { 48.0 } else { -48.0 };
-                    let y = if pos[1] > 0.0 { 72.0 } else { -72.0 };
+                    let x = if pos[0] > 0.0 {
+                        CARD_WIDTH / 2.0
+                    } else {
+                        -CARD_WIDTH / 2.0
+                    };
+                    let y = if pos[1] > 0.0 {
+                        CARD_HEIGHT / 2.0
+                    } else {
+                        -CARD_HEIGHT / 2.0
+                    };
                     if pos[0] * is_tilting.cursor_from_item_position.x > 0.0
                         && pos[1] * is_tilting.cursor_from_item_position.y > 0.0
                     {
