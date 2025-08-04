@@ -1,9 +1,9 @@
 { "frames": {
    "": {
-    "frame": { "x": 0, "y": 0, "w": 880, "h": 396 },
+    "frame": { "x": 0, "y": 0, "w": 948, "h": 396 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 2, "y": 2, "w": 880, "h": 396 },
+    "spriteSourceSize": { "x": 2, "y": 2, "w": 948, "h": 396 },
     "sourceSize": { "w": 952, "h": 400 },
     "duration": 100
    }
@@ -13,7 +13,7 @@
   "version": "1.3.14.4-x64",
   "image": "cards.png",
   "format": "RGBA8888",
-  "size": { "w": 880, "h": 396 },
+  "size": { "w": 948, "h": 396 },
   "scale": "1",
   "frameTags": [
   ],
