@@ -197,7 +197,7 @@ pub fn cursor_drag_start_at_movable_by_cursor_item(
 ) {
     if let Ok((entity, transform)) = query.get_mut(trigger.target()) {
         cmd.trigger_targets(MockPointerOut, entity);
-        cmd.entity(entity).insert(IsMoving::new(transform.clone()));
+        cmd.entity(entity).insert(IsMoving);
         cmd.entity(entity)
             .insert(MoveBasePosition::new(Vec3::from(transform.translation)));
         debug!("Started dragging entity: {:?}", entity);
@@ -206,18 +206,18 @@ pub fn cursor_drag_start_at_movable_by_cursor_item(
 
 pub fn cursor_drag_at_movable_by_cursor_item(
     trigger: Trigger<Pointer<Drag>>,
-    mut query: Query<&mut IsMoving>,
+    query: Query<Entity, With<IsMoving>>,
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
     q_window: Query<&Window>,
+    mut move_event_writer: EventWriter<MoveItem>,
 ) {
-    if let Ok(mut is_moving) = query.get_mut(trigger.target()) {
-        is_moving.target_transform = Transform::from_translation(
-            window_to_world_position(trigger.event().delta, &q_camera, &q_window).extend(0.0),
-        )
-        .mul_transform(Transform::from_translation(
-            is_moving.target_transform.translation,
-        ))
-        .mul_transform(Transform::from_scale(is_moving.target_transform.scale));
+    if let Ok(entity) = query.get(trigger.target()) {
+        move_event_writer.write(MoveItem {
+            entity: (entity),
+            delta_transform: (Transform::from_translation(
+                window_to_world_position(trigger.event().delta, &q_camera, &q_window).extend(0.0),
+            )),
+        });
         trace!("move event: {:?}", trigger.event);
     }
 }
@@ -229,9 +229,8 @@ pub fn cursor_drag_end_at_movable_by_cursor_item(
 ) {
     if let Ok(entity) = query.get_mut(trigger.target()) {
         cmd.entity(entity).remove::<IsMoving>();
-        // cmd.entity(entity).remove::<MoveBasePosition>();
+        cmd.entity(entity).remove::<MoveBasePosition>();
         cmd.trigger_targets(MockPointerOver, entity);
-        // cmd.trigger_targets(MockPointerClick, entity);
         debug!("Stopped dragging entity: {:?}", entity);
     }
 }

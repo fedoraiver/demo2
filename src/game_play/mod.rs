@@ -41,6 +41,7 @@ impl Plugin for GamePlayPlugin {
         app.add_systems(OnEnter(AppState::InGame), setup_background);
         app.add_event::<SelectItem>();
         app.add_event::<UnSelectItem>();
+        app.add_event::<MoveItem>();
         app.init_resource::<CursorPressedAtItem>();
 
         app.add_systems(
