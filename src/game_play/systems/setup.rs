@@ -20,6 +20,7 @@ pub fn setup_background(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials1: ResMut<Assets<BackgroundMaterial>>,
     mut materials2: ResMut<Assets<MyTextureAtlasMaterial>>,
+    mut materials3: ResMut<Assets<ColorMaterial>>,
     mut observer_query: Query<&mut Observer>,
 ) {
     let mut rng = rand::thread_rng();
@@ -63,8 +64,8 @@ pub fn setup_background(
     //     }
     // }
     spawn_poker_card(
-        PokerSuit::Hearts,
-        PokerPoint::Four,
+        PokerSuit::Diamonds,
+        PokerPoint::Ace,
         Transform::from_xyz(0.0, 0.0, 1.0),
         &mut cmd,
         &mut observer_query,
@@ -72,6 +73,7 @@ pub fn setup_background(
         &cards_metadata,
         &mut meshes,
         &mut materials2,
+        &mut materials3,
     );
 }
 

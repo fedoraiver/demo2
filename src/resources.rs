@@ -14,7 +14,7 @@ struct ResetZIndexCommand {
 impl Command for ResetZIndexCommand {
     fn apply(self, world: &mut World) {
         let transforms: Vec<(Entity, f32)> = {
-            let mut query = world.query_filtered::<(Entity, &Transform), With<CardMarker>>();
+            let mut query = world.query_filtered::<(Entity, &Transform), With<Card>>();
             let mut entries: Vec<_> = query
                 .iter(world)
                 .map(|(e, t)| (e, t.translation.z))

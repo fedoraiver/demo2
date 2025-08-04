@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::game_play::{components::*, event::*};
 
 pub fn select_card(
-    mut query: Query<&mut Transform, With<CardMarker>>,
+    mut query: Query<&mut Transform, With<Card>>,
     mut select_event_reader: EventReader<SelectItem>,
     mut unselect_event_reader: EventReader<UnSelectItem>,
 ) {

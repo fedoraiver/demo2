@@ -5,7 +5,7 @@ use bevy::sprite::*;
 use strum_macros::*;
 
 #[derive(Component, Reflect)]
-pub struct CardMarker;
+pub struct Card;
 
 #[derive(Component, Default, Reflect)]
 pub struct Hoverable;
@@ -65,6 +65,9 @@ impl MoveBasePosition {
 pub struct HoverBasePosition {
     pub position: Vec3,
 }
+
+#[derive(Component, Reflect)]
+pub struct CardShadow;
 
 #[derive(Component)]
 pub struct MainCamera;

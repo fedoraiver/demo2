@@ -17,7 +17,8 @@ pub fn spawn_poker_card(
     asset_server: &Res<AssetServer>,
     cards_metadata: &Res<CardsAsePriteMetadata>,
     meshes: &mut ResMut<Assets<Mesh>>,
-    material: &mut ResMut<Assets<MyTextureAtlasMaterial>>,
+    card_material: &mut ResMut<Assets<MyTextureAtlasMaterial>>,
+    shadow_material: &mut ResMut<Assets<ColorMaterial>>,
 ) -> Entity {
     let card_name = format!("{}_{}", suit.to_string(), point.to_string());
     let card_aseprite_slice_rect = cards_metadata.hashmap.get(&card_name).unwrap();
@@ -28,29 +29,34 @@ pub fn spawn_poker_card(
                 CARD_WIDTH,
                 CARD_HEIGHT,
             ))))),
-            MeshMaterial2d(material.add(MyTextureAtlasMaterial {
+            MeshMaterial2d(card_material.add(MyTextureAtlasMaterial {
                 texture: asset_server.load("images/cards.png"),
                 offset: vec2(card_aseprite_slice_rect.x, card_aseprite_slice_rect.y),
                 size: vec2(card_aseprite_slice_rect.w, card_aseprite_slice_rect.h),
                 texture_size: cards_metadata.texture_size,
             })),
             transform,
-            CardMarker,
+            Card,
             Hoverable,
             Tiltable,
             Selectable,
             MovableByCursor,
             children![(
-                Sprite {
-                    color: Color::srgba(0.0, 0.0, 0.0, 0.5),
-                    custom_size: Some(Vec2::new(CARD_WIDTH, CARD_HEIGHT)),
-                    ..default()
-                },
+                Name::new("CardShadow"),
+                CardShadow,
+                Mesh2d(meshes.add(Mesh::from(Rectangle::from_size(vec2(
+                    CARD_WIDTH,
+                    CARD_HEIGHT,
+                ))))),
+                MeshMaterial2d(
+                    shadow_material
+                        .add(ColorMaterial::from_color(Color::srgba(0.0, 0.0, 0.0, 0.5)))
+                ),
                 Transform {
                     translation: Vec3::new(3.0, -3.0, -0.5),
                     ..default()
                 },
-                Name::new("CardShadow"),
+                Pickable::IGNORE,
             ),],
         ))
         .id();
