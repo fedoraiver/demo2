@@ -116,10 +116,10 @@ pub fn register_my_observers(mut cmd: Commands) {
             Observer::new(cursor_out_at_tiltable_item),
             Name::new("cursor_out_at_tiltable_item"),
         ),
-        (
-            Observer::new(mock_cursor_out_at_tiltable_item),
-            Name::new("mock_cursor_out_at_tiltable_item"),
-        ),
+        // (
+        //     Observer::new(mock_cursor_out_at_tiltable_item),
+        //     Name::new("mock_cursor_out_at_tiltable_item"),
+        // ),
         (
             Observer::new(cursor_pressed_at_item),
             Name::new("cursor_pressed_at_item"),

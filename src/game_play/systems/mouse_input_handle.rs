@@ -90,7 +90,6 @@ pub fn cursor_move_at_tiltable_item(
         if let Some(cursor_position) = trigger.event().event.hit.position {
             is_tilting.cursor_from_item_position =
                 cursor_position.xy() - transform.translation.xy();
-            is_tilting.delta = trigger.event().delta;
         }
     }
 }
@@ -123,16 +122,6 @@ pub fn mock_cursor_out_at_hoverable_item(
 
 pub fn cursor_out_at_tiltable_item(
     trigger: Trigger<Pointer<Out>>,
-    query: Query<Entity, With<IsTilting>>,
-    mut cmd: Commands,
-) {
-    if let Ok(entity) = query.get(trigger.target()) {
-        cmd.entity(entity).remove::<IsTilting>();
-    }
-}
-
-pub fn mock_cursor_out_at_tiltable_item(
-    trigger: Trigger<MockPointerOut>,
     query: Query<Entity, With<IsTilting>>,
     mut cmd: Commands,
 ) {
