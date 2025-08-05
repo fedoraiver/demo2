@@ -74,7 +74,6 @@ pub enum PokerSuit {
 
 #[derive(Debug, Clone, Copy, EnumIter)]
 pub enum PokerPoint {
-    Ace,
     Two,
     Three,
     Four,
@@ -87,6 +86,7 @@ pub enum PokerPoint {
     Jack,
     Queen,
     King,
+    Ace,
 }
 
 impl ToString for PokerSuit {
@@ -104,7 +104,6 @@ impl ToString for PokerSuit {
 impl ToString for PokerPoint {
     fn to_string(&self) -> String {
         match self {
-            PokerPoint::Ace => "ace",
             PokerPoint::Two => "two",
             PokerPoint::Three => "three",
             PokerPoint::Four => "four",
@@ -117,6 +116,7 @@ impl ToString for PokerPoint {
             PokerPoint::Jack => "jack",
             PokerPoint::Queen => "queen",
             PokerPoint::King => "king",
+            PokerPoint::Ace => "ace",
         }
         .to_string()
     }

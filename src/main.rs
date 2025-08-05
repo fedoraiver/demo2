@@ -65,7 +65,6 @@ fn main() {
     app.add_plugins(GamePlayPlugin);
     app.add_plugins(PostProcessPlugin);
 
-    // app.add_systems(Startup, register_particle_effects);
     app.add_systems(Startup, register_my_observers);
     app.add_systems(Startup, register_cards_aseprite_metadata);
     app.add_systems(Update, toggle_pause_state);

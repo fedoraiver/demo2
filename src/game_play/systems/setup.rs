@@ -1,5 +1,5 @@
 use crate::game_play::components::*;
-use crate::game_play::util::spawn_poker_card;
+use crate::game_play::util::*;
 use crate::resources::CardsAsePriteMetadata;
 use crate::visual_effect::crt_post_processing::*;
 
@@ -41,28 +41,6 @@ pub fn setup_background(
         Transform::from_xyz(0.0, 0.0, 0.0),
         Pickable::IGNORE,
     ));
-    // use strum::*;
-    // const X_SPACING: f32 = 8.0;
-    // const Y_SPACING: f32 = 12.0;
-    // let start_x = -((CARD_WIDTH + X_SPACING) * 13.0) / 2.0 + (CARD_WIDTH + X_SPACING) / 2.0;
-    // let start_y = ((CARD_HEIGHT + Y_SPACING) * 4.0) / 2.0 - (CARD_HEIGHT + Y_SPACING) / 2.0;
-    // for (row, suit) in PokerSuit::iter().enumerate() {
-    //     for (col, point) in PokerPoint::iter().enumerate() {
-    //         let x = start_x + col as f32 * (CARD_WIDTH + X_SPACING);
-    //         let y = start_y - row as f32 * (CARD_HEIGHT + Y_SPACING);
-    //         spawn_poker_card(
-    //             suit,
-    //             point,
-    //             Transform::from_xyz(x, y, 1.0),
-    //             &mut cmd,
-    //             &mut observer_query,
-    //             &asset_server,
-    //             &cards_metadata,
-    //             &mut meshes,
-    //             &mut materials2,
-    //         );
-    //     }
-    // }
     spawn_poker_card(
         PokerSuit::Diamonds,
         PokerPoint::Ace,
