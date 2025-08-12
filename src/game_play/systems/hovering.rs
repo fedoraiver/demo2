@@ -15,6 +15,7 @@ pub fn hover_card(
     time: Res<Time>,
     mut query: Query<(&mut Transform, &HoverBasePosition), (With<Card>, With<IsHovering>)>,
 ) {
+    // TODO: hovering 防抖
     let (offset_x, offset_y) = hover_card_offset(time.elapsed_secs());
     for (mut transform, base_position) in query.iter_mut() {
         transform.translation.x = base_position.position.x + offset_x;

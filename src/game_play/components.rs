@@ -17,6 +17,7 @@ pub struct IsHovering;
 #[derive(Component, Default, Reflect)]
 pub struct Tiltable;
 
+// TODO: IsTilting 解耦
 #[derive(Component, Default, Reflect)]
 #[require(Tiltable)]
 pub struct IsTilting {

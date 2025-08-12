@@ -30,6 +30,7 @@ use bevy_trauma_shake::TraumaPlugin;
 fn main() {
     let mut app = App::new();
 
+    // TODO: WindowsPlugin 设置 + cursor 图案
     app.add_plugins(
         DefaultPlugins
             .set(ImagePlugin::default_nearest())
