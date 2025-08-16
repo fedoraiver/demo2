@@ -23,11 +23,11 @@ pub fn setup_background(
     mut materials3: ResMut<Assets<ColorMaterial>>,
     mut observer_query: Query<&mut Observer>,
 ) {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let random = vec3(
-        rng.gen_range(1.0e2..1.0e4),
-        rng.gen_range(1.0e2..1.0e4),
-        rng.gen_range(1.0e2..1.0e4),
+        rng.random_range(1.0e2..1.0e4),
+        rng.random_range(1.0e2..1.0e4),
+        rng.random_range(1.0e2..1.0e4),
     );
     debug!("{}", random);
 
